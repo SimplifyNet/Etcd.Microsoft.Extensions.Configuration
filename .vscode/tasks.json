@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+	{
+		"label": "Build",
+		"command": "dotnet",
+		"type": "shell",
+		"args": [
+			"build",
+			"${workspaceFolder}/src/Microsoft.Extensions.Configuration.Etcd.sln"
+		],
+		"group":
+		{
+			"kind": "build",
+			"isDefault": true
+		},
+		"problemMatcher": "$msCompile"
+	}]
+}
