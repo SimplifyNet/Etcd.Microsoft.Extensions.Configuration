@@ -38,5 +38,20 @@ namespace Etcd.Microsoft.Extensions.Configuration
 		/// An <see cref="T:IConfigurationProvider" />
 		/// </returns>
 		public IConfigurationProvider Build(IConfigurationBuilder builder) => new EtcdConfigurationProvider(_client, KeyPrefix);
+
+		/// <summary>
+		/// Converts to string (return etcd connection representation).
+		/// </summary>
+		/// <returns>
+		/// A <see cref="string" /> that represents this instance.
+		/// </returns>
+		public override string ToString()
+		{
+			var applicationInfo = KeyPrefix != null
+			? $" {KeyPrefix} -"
+			: "";
+
+			return $"Etcd -{applicationInfo} {_client.Settings.ConnectionString}";
+		}
 	}
 }

@@ -11,7 +11,7 @@
 		/// <value>
 		/// The connection string.
 		/// </value>
-		string ConnectionString { get; }
+		string? ConnectionString { get; }
 
 		/// <summary>
 		/// Gets the certificate data.

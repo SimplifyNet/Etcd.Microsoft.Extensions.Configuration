@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Etcd.Microsoft.Extensions.Configuration.Auth;
-using Etcd.Microsoft.Extensions.Configuration.Watch;
 using Authpb;
 using dotnet_etcd.interfaces;
+using Etcd.Microsoft.Extensions.Configuration.Auth;
+using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Etcd.Microsoft.Extensions.Configuration.Watch;
 using Etcdserverpb;
 using Google.Protobuf;
 using Grpc.Core;
-
 using Convert = Etcd.Microsoft.Extensions.Configuration.Util.Convert;
 
 namespace Etcd.Microsoft.Extensions.Configuration.Client
@@ -20,6 +20,7 @@ namespace Etcd.Microsoft.Extensions.Configuration.Client
 	public class EtcdKeyValueClient : IEtcdKeyValueClient
 	{
 		private readonly IEtcdClient _client;
+		private readonly IEtcdClientFactory _clientFactory;
 		private readonly bool _enableWatch;
 		private readonly bool _unwatchOnDispose;
 
@@ -45,6 +46,7 @@ namespace Etcd.Microsoft.Extensions.Configuration.Client
 			if (credentials == null) throw new ArgumentNullException(nameof(credentials));
 
 			_client = clientFactory.Create();
+			_clientFactory = clientFactory;
 			_enableWatch = enableWatch;
 			_unwatchOnDispose = unwatchOnDispose;
 
@@ -60,6 +62,14 @@ namespace Etcd.Microsoft.Extensions.Configuration.Client
 		/// Occurs when watch callback is received.
 		/// </summary>
 		public event WatchHandler? WatchCallback;
+
+		/// <summary>
+		/// Gets the settings.
+		/// </summary>
+		/// <value>
+		/// The settings.
+		/// </value>
+		public IEtcdSettings Settings => _clientFactory.Settings;
 
 		/// <summary>
 		/// Gets all keys available to user.

@@ -10,14 +10,26 @@ namespace Etcd.Microsoft.Extensions.Configuration.Client
 	/// </summary>
 	public class EtcdClientFactory : IEtcdClientFactory
 	{
-		private readonly IEtcdSettings? _settings;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EtcdClientFactory" /> class.
 		/// </summary>
 		/// <param name="settings">The settings.</param>
 		/// <exception cref="ArgumentNullException">settings</exception>
-		public EtcdClientFactory(IEtcdSettings? settings = null) => _settings = settings;
+		public EtcdClientFactory(IEtcdSettings? settings = null)
+		{
+			var environmentSetting = EnvironmentSettingsFactory.Create();
+
+			Settings = new EtcdSettings(settings?.ConnectionString ?? environmentSetting.ConnectionString,
+				settings?.CertificateData ?? environmentSetting.CertificateData);
+		}
+
+		/// <summary>
+		/// Gets the settings.
+		/// </summary>
+		/// <value>
+		/// The settings.
+		/// </value>
+		public IEtcdSettings Settings { get; }
 
 		/// <summary>
 		/// Creates the etcd client instance.
@@ -25,16 +37,12 @@ namespace Etcd.Microsoft.Extensions.Configuration.Client
 		/// <returns></returns>
 		public IEtcdClient Create()
 		{
-			var connectionString = _settings?.ConnectionString ?? EtcdApplicationEnvironment.ConnectionString;
-
-			if (string.IsNullOrEmpty(connectionString))
+			if (string.IsNullOrEmpty(Settings.ConnectionString))
 				throw new EtcdConfigurationException("Connection string is missing, should be passed in AddEtcd parameters or set in environment variables.");
 
-			return connectionString!.StartsWith("https")
-				? new EtcdClient(connectionString, caCert: _settings?.CertificateData
-														   ?? EtcdApplicationEnvironment.GetCaCertificateData()
-														   ?? throw new EtcdConfigurationException("Certificate data is missing, should be passed in AddEtcd parameters or set in environment variables."))
-				: new EtcdClient(connectionString);
+			return Settings.ConnectionString!.StartsWith("https")
+				? new EtcdClient(Settings.ConnectionString, caCert: Settings.CertificateData ?? throw new EtcdConfigurationException("Certificate data is missing, should be passed in AddEtcd parameters or set in environment variables."))
+				: new EtcdClient(Settings.ConnectionString);
 		}
 	}
 }
