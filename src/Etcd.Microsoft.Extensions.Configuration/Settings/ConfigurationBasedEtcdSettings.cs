@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace Etcd.Microsoft.Extensions.Configuration.Settings
 {

@@ -1,4 +1,5 @@
 ﻿using Etcd.Microsoft.Extensions.Configuration.Client;
+using Microsoft.Extensions.Configuration;
 
 namespace Etcd.Microsoft.Extensions.Configuration
 {

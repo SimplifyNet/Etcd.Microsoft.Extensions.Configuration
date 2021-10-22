@@ -2,6 +2,7 @@
 using System.Linq;
 using Etcd.Microsoft.Extensions.Configuration.Auth;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.DotNetCore

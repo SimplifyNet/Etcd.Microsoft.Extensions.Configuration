@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Etcd.Microsoft.Extensions.Configuration.Auth;
 using Etcd.Microsoft.Extensions.Configuration.Client;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Microsoft.Extensions.Configuration;
 
 namespace Etcd.Microsoft.Extensions.Configuration
 {

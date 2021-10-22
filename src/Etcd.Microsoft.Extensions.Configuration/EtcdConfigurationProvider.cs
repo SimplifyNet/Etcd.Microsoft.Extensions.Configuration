@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Etcd.Microsoft.Extensions.Configuration.Client;
 using Etcd.Microsoft.Extensions.Configuration.Watch;
+using Microsoft.Extensions.Configuration;
 
 namespace Etcd.Microsoft.Extensions.Configuration
 {
