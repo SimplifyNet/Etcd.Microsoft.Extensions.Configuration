@@ -7,7 +7,7 @@
 		"type": "shell",
 		"args": [
 			"build",
-			"${workspaceFolder}/src/Microsoft.Extensions.Configuration.Etcd.sln"
+			"${workspaceFolder}/src/Etcd.Microsoft.Extensions.Configuration.sln"
 		],
 		"group":
 		{

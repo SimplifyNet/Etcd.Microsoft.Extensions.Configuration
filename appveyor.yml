@@ -9,10 +9,10 @@ configuration: Release
 platform: Any CPU
 
 before_build:
-  - nuget restore src/Microsoft.Extensions.Configuration.Etcd.sln
+  - nuget restore src/Etcd.Microsoft.Extensions.Configuration.sln
 
 build:
-  project: src/Microsoft.Extensions.Configuration.Etcd.sln
+  project: src/Etcd.Microsoft.Extensions.Configuration.sln
   publish_nuget: true
   use_snupkg_format: true
   parallel: true
