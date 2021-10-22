@@ -15,9 +15,12 @@
 		<Authors>Simplify community</Authors>
 		<Copyright>Licensed under LGPL</Copyright>
 		<PackageProjectUrl>https://github.com/SimplifyNet/Etcd.Microsoft.Extensions.Configuration</PackageProjectUrl>
-		<PackageIcon>icon.png</PackageIcon>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<PackageTags>.NET etcd Configuration</PackageTags>
+
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 
 		<PackageReleaseNotes>See https://github.com/SimplifyNet/Etcd.Microsoft.Extensions.Configuration/tree/master/src/Etcd.Microsoft.Extensions.Configuration/CHANGELOG.md for details</PackageReleaseNotes>
 	</PropertyGroup>
@@ -31,5 +34,7 @@
 	<ItemGroup>
 		<None Include="..\..\images\icon.png" Pack="true" Visible="false" PackagePath="" />
 		<None Include="CHANGELOG.md" Pack="true" PackagePath="" />
+		<None Include="LICENSE" Pack="true" PackagePath="" />
+		<None Include="README.md" Pack="true" PackagePath="" />
 	</ItemGroup>
 </Project>
