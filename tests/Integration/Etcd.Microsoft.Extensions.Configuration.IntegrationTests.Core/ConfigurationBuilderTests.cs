@@ -5,7 +5,7 @@ using Etcd.Microsoft.Extensions.Configuration.Settings;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
-namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.DotNetCore
+namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core
 {
 	[TestFixture]
 	[Category("Integration")]

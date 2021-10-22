@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
-namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.DotNetCore.Settings
+namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core.Settings
 {
 	[TestFixture]
 	public class ConfigurationBasedEtcdSettingsTests
