@@ -2,8 +2,8 @@
 
 [![Nuget Version](https://img.shields.io/nuget/v/Etcd.Microsoft.Extensions.Configuration)](https://www.nuget.org/packages/Etcd.Microsoft.Extensions.Configuration/)
 [![Nuget Download](https://img.shields.io/nuget/dt/Etcd.Microsoft.Extensions.Configuration)](https://www.nuget.org/packages/Etcd.Microsoft.Extensions.Configuration/)
-[![AppVeyor branch](https://img.shields.io/appveyor/ci/i4004/microsoft-extensions-configuration-etcd/master)](https://ci.appveyor.com/project/i4004/microsoft-extensions-configuration-etcd)
-[![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/i4004/microsoft-extensions-configuration-etcd/master)](https://ci.appveyor.com/project/i4004/microsoft-extensions-configuration-etcd)
+[![AppVeyor branch](https://img.shields.io/appveyor/ci/i4004/etcd-microsoft-extensions-configuration/master)](https://ci.appveyor.com/project/i4004/etcd-microsoft-extensions-configuration)
+[![AppVeyor tests (branch)](https://img.shields.io/appveyor/tests/i4004/etcd-microsoft-extensions-configuration/master)](https://ci.appveyor.com/project/i4004/etcd-microsoft-extensions-configuration)
 [![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/nuget/Etcd.Microsoft.Extensions.Configuration)](https://libraries.io/nuget/Etcd.Microsoft.Extensions.Configuration)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/SimplifyNet/Etcd.Microsoft.Extensions.Configuration)](https://www.codefactor.io/repository/github/simplifynet/Etcd.Microsoft.Extensions.Configuration)
 ![Platform](https://img.shields.io/badge/platform-.NET%205.0%20%7C%20.NET%20Standard%202.1%20%7C%20.NET%20Standard%202.0%20%7C%20.NET%204.6.2-lightgrey)
@@ -11,7 +11,6 @@
 
 Etcd based configuration provider for Microsoft.Extensions.Configuration.
 ## Quick start
-
 ### HTTP
 
 ```csharp
