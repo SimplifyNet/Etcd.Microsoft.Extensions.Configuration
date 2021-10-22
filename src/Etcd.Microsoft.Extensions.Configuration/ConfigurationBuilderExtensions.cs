@@ -17,6 +17,36 @@ namespace Etcd.Microsoft.Extensions.Configuration
 		/// </summary>
 		/// <param name="configurationBuilder">The configuration builder.</param>
 		/// <param name="credentials">The credentials.</param>
+		/// <param name="enableWatch">if set to <c>true</c> the keys watch will be enabled.</param>
+		/// <param name="unwatchOnDispose">if set to <c>true</c> the watching keys will be unwatched on dispose .</param>
+		/// <returns></returns>
+		public static IConfigurationBuilder AddEtcd(this IConfigurationBuilder configurationBuilder,
+			ICredentials credentials,
+			bool enableWatch = true,
+			bool unwatchOnDispose = true) =>
+			configurationBuilder.AddEtcd(credentials, null, new List<string>(), enableWatch, unwatchOnDispose);
+
+		/// <summary>
+		/// Adds the etcd provider to the configuration builder.
+		/// </summary>
+		/// <param name="configurationBuilder">The configuration builder.</param>
+		/// <param name="credentials">The credentials.</param>
+		/// <param name="keyPrefix">Key prefix for additional configuration layer with prefix.</param>
+		/// <param name="enableWatch">if set to <c>true</c> the keys watch will be enabled.</param>
+		/// <param name="unwatchOnDispose">if set to <c>true</c> the watching keys will be unwatched on dispose .</param>
+		/// <returns></returns>
+		public static IConfigurationBuilder AddEtcd(this IConfigurationBuilder configurationBuilder,
+			ICredentials credentials,
+			string? keyPrefix,
+			bool enableWatch = true,
+			bool unwatchOnDispose = true) =>
+			configurationBuilder.AddEtcd(credentials, null, keyPrefix, enableWatch, unwatchOnDispose);
+
+		/// <summary>
+		/// Adds the etcd provider to the configuration builder.
+		/// </summary>
+		/// <param name="configurationBuilder">The configuration builder.</param>
+		/// <param name="credentials">The credentials.</param>
 		/// <param name="settings">The settings.</param>
 		/// <param name="keyPrefix">Key prefix for additional configuration layer with prefix.</param>
 		/// <param name="enableWatch">if set to <c>true</c> the keys watch will be enabled.</param>
@@ -24,19 +54,34 @@ namespace Etcd.Microsoft.Extensions.Configuration
 		/// <returns></returns>
 		public static IConfigurationBuilder AddEtcd(this IConfigurationBuilder configurationBuilder,
 			ICredentials credentials,
-			IEtcdSettings? settings = null,
-			string? keyPrefix = null,
+			IEtcdSettings? settings,
+			string? keyPrefix,
 			bool enableWatch = true,
-			bool unwatchOnDispose = true)
-		{
-			return configurationBuilder.AddEtcd(credentials, settings, !string.IsNullOrEmpty(keyPrefix)
+			bool unwatchOnDispose = true) =>
+			configurationBuilder.AddEtcd(credentials, settings, !string.IsNullOrEmpty(keyPrefix)
 					? new List<string>
 					{
 						keyPrefix!
 					}
 					: null,
 				enableWatch, unwatchOnDispose);
-		}
+
+		/// <summary>
+		/// Adds the etcd provider to the configuration builder.
+		/// </summary>
+		/// <param name="configurationBuilder">The configuration builder.</param>
+		/// <param name="credentials">The credentials.</param>
+		/// <param name="keyPrefixes">The key prefixes for additional configuration layers with prefixes.</param>
+		/// <param name="enableWatch">if set to <c>true</c> the keys watch will be enabled.</param>
+		/// <param name="unwatchOnDispose">if set to <c>true</c> the watching keys will be unwatched on dispose .</param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException">configurationBuilder</exception>
+		public static IConfigurationBuilder AddEtcd(this IConfigurationBuilder configurationBuilder,
+			ICredentials credentials,
+			IList<string> keyPrefixes,
+			bool enableWatch = true,
+			bool unwatchOnDispose = true) =>
+			configurationBuilder.AddEtcd(credentials, null, keyPrefixes, enableWatch, unwatchOnDispose);
 
 		/// <summary>
 		/// Adds the etcd provider to the configuration builder.
@@ -48,11 +93,11 @@ namespace Etcd.Microsoft.Extensions.Configuration
 		/// <param name="enableWatch">if set to <c>true</c> the keys watch will be enabled.</param>
 		/// <param name="unwatchOnDispose">if set to <c>true</c> the watching keys will be unwatched on dispose .</param>
 		/// <returns></returns>
-		/// <exception cref="System.ArgumentNullException">configurationBuilder</exception>
+		/// <exception cref="ArgumentNullException">configurationBuilder</exception>
 		public static IConfigurationBuilder AddEtcd(this IConfigurationBuilder configurationBuilder,
 			ICredentials credentials,
-			IEtcdSettings? settings = null,
-			IList<string>? keyPrefixes = null,
+			IEtcdSettings? settings,
+			IList<string>? keyPrefixes,
 			bool enableWatch = true,
 			bool unwatchOnDispose = true)
 		{
