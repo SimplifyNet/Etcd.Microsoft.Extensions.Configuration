@@ -31,7 +31,7 @@ namespace Microsoft.Extensions.Configuration.Etcd
 			return configurationBuilder.AddEtcd(credentials, settings, !string.IsNullOrEmpty(keyPrefix)
 					? new List<string>
 					{
-						keyPrefix
+						keyPrefix!
 					}
 					: null,
 				enableWatch, unwatchOnDispose);
