@@ -1,4 +1,6 @@
 {
+	"dotnet-test-explorer.testProjectPath": "tests/**/*Tests.csproj",
+	"dotnet-test-explorer.testArguments": "/p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=./coverage/lcov.info",
 	"cSpell.words": [
 		"Authpb",
 		"Etcdserverpb",
