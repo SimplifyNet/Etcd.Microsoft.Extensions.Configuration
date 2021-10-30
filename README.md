@@ -39,7 +39,7 @@ var mySection = config.GetSection("MySection");
 var myKeyValue = mySection["MyKeyName"];
 ```
 
-### HTTP with settings from local JSON file
+### HTTPS with settings from local JSON file
 
 appsettings.json
 ```json
@@ -47,7 +47,8 @@ appsettings.json
 	"EtcdSettings":
 	{
 		"ConnectionString":, "https://serveraddress:2379",
-		"CertificateData":, "asdb,mdfgldfglfdkjglkjl234-dflkdf;xlcvbxmas'd;l'as;dl'2435ro=fdodfgldk",
+		"CertificateData":, "-----BEGIN CERTIFICATE----- 1234321 -----END CERTIFICATE-----
+",
 	}
 }
 
