@@ -58,7 +58,7 @@ appsettings.json
 var jsonConfig = new ConfigurationBuilder()
 	.AddJsonFile("appsettings.json")
 	.Build();
-	
+
 	var config = new ConfigurationBuilder()
 	.AddEtcd(
 		new Credentials("MyEtcdUserName", "passw"),

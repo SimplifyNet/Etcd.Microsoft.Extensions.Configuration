@@ -48,6 +48,12 @@ namespace Etcd.Microsoft.Extensions.Configuration
 		/// </returns>
 		public override bool TryGet(string key, out string value) => base.TryGet(_keyPrefix + key, out value);
 
+		/// <summary>Returns the list of keys that this provider has.</summary>
+		/// <param name="earlierKeys">The earlier keys that other providers contain.</param>
+		/// <param name="parentPath">The path for the parent IConfiguration.</param>
+		/// <returns>The list of keys for this provider.</returns>
+		public override IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath) => base.GetChildKeys(earlierKeys, _keyPrefix + parentPath);
+
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
