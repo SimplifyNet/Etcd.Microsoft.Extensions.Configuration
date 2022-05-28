@@ -12,222 +12,221 @@ using Google.Protobuf;
 using Grpc.Core;
 using Convert = Etcd.Microsoft.Extensions.Configuration.Util.Convert;
 
-namespace Etcd.Microsoft.Extensions.Configuration.Client
+namespace Etcd.Microsoft.Extensions.Configuration.Client;
+
+/// <summary>
+/// Provides etcd key-value client with additional functionality
+/// </summary>
+public class EtcdKeyValueClient : IEtcdKeyValueClient
 {
+	private readonly IEtcdClient _client;
+	private readonly IEtcdClientFactory _clientFactory;
+	private readonly bool _enableWatch;
+	private readonly bool _unwatchOnDispose;
+
+	private readonly IList<long> _watchIDs = new List<long>();
+	private readonly object _locker = new();
+
+	private string? _userName;
+	private string? _token;
+
 	/// <summary>
-	/// Provides etcd key-value client with additional functionality
+	/// Initializes a new instance of the <see cref="EtcdKeyValueClient" /> class.
 	/// </summary>
-	public class EtcdKeyValueClient : IEtcdKeyValueClient
+	/// <param name="clientFactory">The client factory.</param>
+	/// <param name="credentials">The credentials.</param>
+	/// <param name="enableWatch">if set to <c>true</c> the keys watch will be enabled.</param>
+	/// <param name="unwatchOnDispose">if set to <c>true</c> the watching keys will be unwatched on dispose .</param>
+	/// <exception cref="ArgumentNullException">clientFactory
+	/// or
+	/// credentials</exception>
+	public EtcdKeyValueClient(IEtcdClientFactory clientFactory, ICredentials credentials, bool enableWatch = true, bool unwatchOnDispose = true)
 	{
-		private readonly IEtcdClient _client;
-		private readonly IEtcdClientFactory _clientFactory;
-		private readonly bool _enableWatch;
-		private readonly bool _unwatchOnDispose;
+		if (clientFactory == null) throw new ArgumentNullException(nameof(clientFactory));
+		if (credentials == null) throw new ArgumentNullException(nameof(credentials));
 
-		private readonly IList<long> _watchIDs = new List<long>();
-		private readonly object _locker = new();
+		_client = clientFactory.Create();
+		_clientFactory = clientFactory;
+		_enableWatch = enableWatch;
+		_unwatchOnDispose = unwatchOnDispose;
 
-		private string? _userName;
-		private string? _token;
+		Authenticate(credentials);
+	}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="EtcdKeyValueClient" /> class.
-		/// </summary>
-		/// <param name="clientFactory">The client factory.</param>
-		/// <param name="credentials">The credentials.</param>
-		/// <param name="enableWatch">if set to <c>true</c> the keys watch will be enabled.</param>
-		/// <param name="unwatchOnDispose">if set to <c>true</c> the watching keys will be unwatched on dispose .</param>
-		/// <exception cref="ArgumentNullException">clientFactory
-		/// or
-		/// credentials</exception>
-		public EtcdKeyValueClient(IEtcdClientFactory clientFactory, ICredentials credentials, bool enableWatch = true, bool unwatchOnDispose = true)
+	/// <summary>
+	/// Finalizes an instance of the <see cref="EtcdKeyValueClient"/> class.
+	/// </summary>
+	~EtcdKeyValueClient() => Dispose();
+
+	/// <summary>
+	/// Occurs when watch callback is received.
+	/// </summary>
+	public event WatchHandler? WatchCallback;
+
+	/// <summary>
+	/// Gets the settings.
+	/// </summary>
+	/// <value>
+	/// The settings.
+	/// </value>
+	public IEtcdSettings Settings => _clientFactory.Settings;
+
+	/// <summary>
+	/// Gets all keys available to user.
+	/// </summary>
+	/// <returns></returns>
+	public IDictionary<string, string> GetAllKeys()
+	{
+		CheckIsAuthenticated();
+
+		try
 		{
-			if (clientFactory == null) throw new ArgumentNullException(nameof(clientFactory));
-			if (credentials == null) throw new ArgumentNullException(nameof(credentials));
+			var roles = GetRoles();
+			var permissions = new List<Permission>();
+			var keys = new List<Mvccpb.KeyValue>();
 
-			_client = clientFactory.Create();
-			_clientFactory = clientFactory;
-			_enableWatch = enableWatch;
-			_unwatchOnDispose = unwatchOnDispose;
+			foreach (var role in roles)
+				permissions.AddRange(GetPermissions(role));
 
-			Authenticate(credentials);
+			foreach (var permission in permissions)
+				keys.AddRange(GetKeys(permission.Key.ToStringUtf8()));
+
+			if (_enableWatch)
+				foreach (var item in keys)
+					Watch(item.Key.ToStringUtf8());
+
+			return Convert.ToDictionary(keys);
 		}
-
-		/// <summary>
-		/// Finalizes an instance of the <see cref="EtcdKeyValueClient"/> class.
-		/// </summary>
-		~EtcdKeyValueClient() => Dispose();
-
-		/// <summary>
-		/// Occurs when watch callback is received.
-		/// </summary>
-		public event WatchHandler? WatchCallback;
-
-		/// <summary>
-		/// Gets the settings.
-		/// </summary>
-		/// <value>
-		/// The settings.
-		/// </value>
-		public IEtcdSettings Settings => _clientFactory.Settings;
-
-		/// <summary>
-		/// Gets all keys available to user.
-		/// </summary>
-		/// <returns></returns>
-		public IDictionary<string, string> GetAllKeys()
+		catch (RpcException e)
 		{
-			CheckIsAuthenticated();
-
-			try
-			{
-				var roles = GetRoles();
-				var permissions = new List<Permission>();
-				var keys = new List<Mvccpb.KeyValue>();
-
-				foreach (var role in roles)
-					permissions.AddRange(GetPermissions(role));
-
-				foreach (var permission in permissions)
-					keys.AddRange(GetKeys(permission.Key.ToStringUtf8()));
-
-				if (_enableWatch)
-					foreach (var item in keys)
-						Watch(item.Key.ToStringUtf8());
-
-				return Convert.ToDictionary(keys);
-			}
-			catch (RpcException e)
-			{
-				throw new EtcdException($"Error reading all keys from etcd provider", e);
-			}
+			throw new EtcdException($"Error reading all keys from etcd provider", e);
 		}
+	}
 
-		/// <summary>
-		/// Gets the value.
-		/// </summary>
-		/// <param name="key">The key.</param>
-		/// <returns></returns>
-		public string? GetValue(string key)
+	/// <summary>
+	/// Gets the value.
+	/// </summary>
+	/// <param name="key">The key.</param>
+	/// <returns></returns>
+	public string? GetValue(string key)
+	{
+		CheckIsAuthenticated();
+
+		try
 		{
-			CheckIsAuthenticated();
-
-			try
-			{
-				return _client.GetVal(key, GetMetadata());
-			}
-			catch (RpcException e)
-			{
-				throw new EtcdException($"Error reading value for key '{key}' from etcd provider", e);
-			}
+			return _client.GetVal(key, GetMetadata());
 		}
-
-		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-		/// </summary>
-		public void Dispose()
+		catch (RpcException e)
 		{
-			if (_unwatchOnDispose)
-				StopWatchAll();
-
-			_client.Dispose();
+			throw new EtcdException($"Error reading value for key '{key}' from etcd provider", e);
 		}
+	}
 
-		/// <summary>
-		/// Authenticates the client.
-		/// </summary>
-		/// <param name="credentials">The credentials.</param>
-		private void Authenticate(ICredentials credentials)
+	/// <summary>
+	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+	/// </summary>
+	public void Dispose()
+	{
+		if (_unwatchOnDispose)
+			StopWatchAll();
+
+		_client.Dispose();
+	}
+
+	/// <summary>
+	/// Authenticates the client.
+	/// </summary>
+	/// <param name="credentials">The credentials.</param>
+	private void Authenticate(ICredentials credentials)
+	{
+		var result = _client.Authenticate(new AuthenticateRequest
 		{
-			var result = _client.Authenticate(new AuthenticateRequest
-			{
-				Name = credentials.UserName,
-				Password = credentials.Password
-			});
+			Name = credentials.UserName,
+			Password = credentials.Password
+		});
 
-			_token = result.Token;
-			_userName = credentials.UserName;
-		}
+		_token = result.Token;
+		_userName = credentials.UserName;
+	}
 
-		private IEnumerable<Mvccpb.KeyValue> GetKeys(string prefixKey) => _client.GetRange(prefixKey, GetMetadata()).Kvs;
+	private IEnumerable<Mvccpb.KeyValue> GetKeys(string prefixKey) => _client.GetRange(prefixKey, GetMetadata()).Kvs;
 
-		private IEnumerable<string> GetRoles() =>
-			_client.UserGet(new AuthUserGetRequest
-			{
-				Name = _userName
-			}, GetMetadata()).Roles;
-
-		private IEnumerable<Permission> GetPermissions(string role) =>
-			_client.RoleGet(new AuthRoleGetRequest
-			{
-				Role = role
-			}, GetMetadata()).Perm;
-
-		private Metadata GetMetadata() =>
-			new()
-			{
-				new("token", _token)
-			};
-
-		private void CheckIsAuthenticated()
+	private IEnumerable<string> GetRoles() =>
+		_client.UserGet(new AuthUserGetRequest
 		{
-			if (_token == null || _userName == null)
-				throw new InvalidOperationException("Etcd client is not authenticated");
-		}
+			Name = _userName
+		}, GetMetadata()).Roles;
 
-		private void OnWatchCallback(WatchResponse response)
+	private IEnumerable<Permission> GetPermissions(string role) =>
+		_client.RoleGet(new AuthRoleGetRequest
 		{
-			if (_unwatchOnDispose)
-				lock (_locker)
-				{
-					if (!_watchIDs.Contains(response.WatchId))
-						_watchIDs.Add(response.WatchId);
-				}
+			Role = role
+		}, GetMetadata()).Perm;
 
-			WatchCallback?.Invoke(response.Events.Select(x =>
-				new WatchEvent(Convert.ToEventType(x.Type),
-					x.Kv.Key.ToStringUtf8(),
-					x.Kv.Value.ToStringUtf8())));
-		}
-
-		private Task StopWatchAsync(long watchID)
+	private Metadata GetMetadata() =>
+		new()
 		{
-			return _client.Watch(new WatchRequest
-			{
-				CancelRequest = new WatchCancelRequest
-				{
-					WatchId = watchID
-				}
-			}, OnWatchCallback, GetMetadata());
-		}
+			new("token", _token)
+		};
 
-		private void StopWatchAll()
-		{
+	private void CheckIsAuthenticated()
+	{
+		if (_token == null || _userName == null)
+			throw new InvalidOperationException("Etcd client is not authenticated");
+	}
+
+	private void OnWatchCallback(WatchResponse response)
+	{
+		if (_unwatchOnDispose)
 			lock (_locker)
 			{
-				foreach (var item in _watchIDs.ToList())
-				{
-					try
-					{
-						StopWatchAsync(item).Wait(200);
-					}
-					catch (Exception e)
-					{
-						Console.WriteLine(e);
-					}
+				if (!_watchIDs.Contains(response.WatchId))
+					_watchIDs.Add(response.WatchId);
+			}
 
-					_watchIDs.Remove(item);
+		WatchCallback?.Invoke(response.Events.Select(x =>
+			new WatchEvent(Convert.ToEventType(x.Type),
+				x.Kv.Key.ToStringUtf8(),
+				x.Kv.Value.ToStringUtf8())));
+	}
+
+	private Task StopWatchAsync(long watchID)
+	{
+		return _client.Watch(new WatchRequest
+		{
+			CancelRequest = new WatchCancelRequest
+			{
+				WatchId = watchID
+			}
+		}, OnWatchCallback, GetMetadata());
+	}
+
+	private void StopWatchAll()
+	{
+		lock (_locker)
+		{
+			foreach (var item in _watchIDs.ToList())
+			{
+				try
+				{
+					StopWatchAsync(item).Wait(200);
 				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}
+
+				_watchIDs.Remove(item);
 			}
 		}
-
-		private void Watch(string key) =>
-			_client.Watch(new WatchRequest
-			{
-				CreateRequest = new WatchCreateRequest
-				{
-					Key = ByteString.CopyFromUtf8(key)
-				}
-			}, OnWatchCallback, GetMetadata());
 	}
+
+	private void Watch(string key) =>
+		_client.Watch(new WatchRequest
+		{
+			CreateRequest = new WatchCreateRequest
+			{
+				Key = ByteString.CopyFromUtf8(key)
+			}
+		}, OnWatchCallback, GetMetadata());
 }

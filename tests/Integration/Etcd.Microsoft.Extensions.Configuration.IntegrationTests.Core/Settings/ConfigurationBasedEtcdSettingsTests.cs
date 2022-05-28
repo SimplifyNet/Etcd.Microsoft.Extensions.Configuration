@@ -2,29 +2,28 @@
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
-namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core.Settings
+namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core.Settings;
+
+[TestFixture]
+public class ConfigurationBasedEtcdSettingsTests
 {
-	[TestFixture]
-	public class ConfigurationBasedEtcdSettingsTests
+	[Test]
+	[Category("Integration")]
+	public void Ctor_ExistingSettings_Loaded()
 	{
-		[Test]
-		[Category("Integration")]
-		public void Ctor_ExistingSettings_Loaded()
-		{
-			// Arrange
+		// Arrange
 
-			var config = new ConfigurationBuilder()
-				.AddJsonFile("appsettings.json")
-				.Build();
+		var config = new ConfigurationBuilder()
+			.AddJsonFile("appsettings.json")
+			.Build();
 
-			// Act
+		// Act
 
-			var settings = new ConfigurationBasedEtcdSettings(config);
+		var settings = new ConfigurationBasedEtcdSettings(config);
 
-			// Assert
+		// Assert
 
-			Assert.AreEqual("http://localhost:2379", settings.ConnectionString);
-			Assert.AreEqual("1234321", settings.CertificateData);
-		}
+		Assert.AreEqual("http://localhost:2379", settings.ConnectionString);
+		Assert.AreEqual("1234321", settings.CertificateData);
 	}
 }
