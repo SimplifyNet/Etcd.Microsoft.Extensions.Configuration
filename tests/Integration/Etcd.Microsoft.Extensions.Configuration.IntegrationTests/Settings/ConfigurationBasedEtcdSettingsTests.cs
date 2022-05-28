@@ -1,8 +1,8 @@
-﻿using Etcd.Microsoft.Extensions.Configuration.Settings;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Etcd.Microsoft.Extensions.Configuration.Settings;
 using NUnit.Framework;
 
-namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core.Settings;
+namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Settings;
 
 [TestFixture]
 public class ConfigurationBasedEtcdSettingsTests
