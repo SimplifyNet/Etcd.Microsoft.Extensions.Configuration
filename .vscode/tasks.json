@@ -4,16 +4,19 @@
 	{
 		"label": "Build",
 		"command": "dotnet",
-		"type": "shell",
+		"type": "process",
 		"args": [
-			"build",
-			"${workspaceFolder}/src/Etcd.Microsoft.Extensions.Configuration.sln"
+			"build"
 		],
+		"options":
+		{
+			"cwd": "src"
+		},
+		"problemMatcher": "$msCompile",
 		"group":
 		{
 			"kind": "build",
 			"isDefault": true
-		},
-		"problemMatcher": "$msCompile"
+		}
 	}]
 }
