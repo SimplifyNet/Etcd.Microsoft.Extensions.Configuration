@@ -19,8 +19,7 @@ public class EtcdClientFactory : IEtcdClientFactory
 	{
 		var environmentSetting = EnvironmentSettingsFactory.Create();
 
-		Settings = new EtcdSettings(settings?.ConnectionString ?? environmentSetting.ConnectionString,
-			settings?.CertificateData ?? environmentSetting.CertificateData);
+		Settings = new EtcdSettings(settings?.ConnectionString ?? environmentSetting.ConnectionString);
 	}
 
 	/// <summary>
@@ -40,8 +39,6 @@ public class EtcdClientFactory : IEtcdClientFactory
 		if (string.IsNullOrEmpty(Settings.ConnectionString))
 			throw new EtcdConfigurationException("Connection string is missing, should be passed in AddEtcd parameters or set in environment variables.");
 
-		return Settings.ConnectionString!.StartsWith("https")
-			? new EtcdClient(Settings.ConnectionString, caCert: Settings.CertificateData ?? throw new EtcdConfigurationException("Certificate data is missing, should be passed in AddEtcd parameters or set in environment variables."))
-			: new EtcdClient(Settings.ConnectionString);
+		return new EtcdClient(Settings.ConnectionString);
 	}
 }

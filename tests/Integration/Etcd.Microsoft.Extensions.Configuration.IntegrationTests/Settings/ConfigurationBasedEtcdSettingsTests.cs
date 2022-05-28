@@ -24,6 +24,5 @@ public class ConfigurationBasedEtcdSettingsTests
 		// Assert
 
 		Assert.AreEqual("http://localhost:2379", settings.ConnectionString);
-		Assert.AreEqual("1234321", settings.CertificateData);
 	}
 }
