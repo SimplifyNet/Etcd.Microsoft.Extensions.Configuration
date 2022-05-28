@@ -57,7 +57,6 @@ appsettings.json
 ```
 
 ```csharp
-
 var jsonConfig = new ConfigurationBuilder()
  .AddJsonFile("appsettings.json")
  .Build();
@@ -73,3 +72,20 @@ var myKeyValue = mySection["MyKeyName"];
 ```
 
 Settings can be mixed from different locations, for example, you can set only CA file in environment variable and only connection string in JSON file.
+
+## Contributing
+
+There are many ways in which you can participate in the project. Like most open-source software projects, contributing code is just one of many outlets where you can help improve. Some of the things that you could help out with are:
+
+- Documentation (both code and features)
+- Bug reports
+- Bug fixes
+- Feature requests
+- Feature implementations
+- Test coverage
+- Code quality
+- Sample applications
+
+## License
+
+Licensed under the GNU LESSER GENERAL PUBLIC LICENSE
