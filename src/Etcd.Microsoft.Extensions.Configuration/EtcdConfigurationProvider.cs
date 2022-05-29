@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using Etcd.Microsoft.Extensions.Configuration.Client;
 using Etcd.Microsoft.Extensions.Configuration.Watch;
-using Microsoft.Extensions.Configuration;
 
 namespace Etcd.Microsoft.Extensions.Configuration;
 
@@ -27,9 +27,6 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 		_client = client;
 		_keyPrefix = keyPrefix;
 
-		if (_keyPrefix != null)
-			_keyPrefix += ":";
-
 		_client.WatchCallback += OnWatchCallback;
 	}
 
@@ -46,13 +43,21 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	/// <returns>
 	/// True if key has a value, false otherwise.
 	/// </returns>
-	public override bool TryGet(string key, out string value) => base.TryGet(_keyPrefix + key, out value);
+	public override bool TryGet(string key, out string value) =>
+		base.TryGet(_keyPrefix == null
+						? key
+						: _keyPrefix + ":" + key
+					, out value);
 
 	/// <summary>Returns the list of keys that this provider has.</summary>
 	/// <param name="earlierKeys">The earlier keys that other providers contain.</param>
 	/// <param name="parentPath">The path for the parent IConfiguration.</param>
 	/// <returns>The list of keys for this provider.</returns>
-	public override IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath) => base.GetChildKeys(earlierKeys, _keyPrefix + parentPath);
+	public override IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath) =>
+		base.GetChildKeys(earlierKeys,
+			_keyPrefix != null
+				? _keyPrefix + parentPath
+		 		: parentPath);
 
 	/// <summary>
 	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -73,9 +78,7 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 						Data.Add(item.Key, item.Value);
 				}
 				else
-				{
 					Data.Remove(item.Key);
-				}
 			}
 		}
 	}
