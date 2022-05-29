@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.2] - 2022-05-29
+
+### Fixed
+
+- IConfigurationSection.GetChildren returns empty result (#2)
+
+### Dependencies
+
+- Grpc.Core bump to 2.46.3 for .NET 4.6.2 target
+
+### Added
+
+- .NET 6 explicit support
+
+### Removed
+
+- .NET 5 incorrect target
+
 ## [1.0.1] - 2021-11-15
 
 ### Fixed

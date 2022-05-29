@@ -8,7 +8,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 
 		<Description>Etcd based configuration provider for Microsoft.Extensions.Configuration</Description>
 		<Authors>Simplify community</Authors>
@@ -27,7 +27,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
-		<PackageReference Include="Grpc.Core" Version="2.41.0" />
+		<PackageReference Include="Grpc.Core" Version="2.46.3" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\..\images\icon.png" Pack="true" Visible="false" PackagePath="" />
