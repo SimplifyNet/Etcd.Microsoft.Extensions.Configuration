@@ -34,6 +34,7 @@ public class ConfigurationBuilderTests
 
 		Assert.IsNotNull(config);
 		Assert.IsTrue(config.GetChildren().Any());
+		Assert.IsTrue(testAppSection.GetChildren().Any());
 
 		Assert.AreEqual("Item 1 value", testSection["Item1"]);
 		Assert.AreEqual("Item 2 value", testSection["Item2"]);
