@@ -56,7 +56,7 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	public override IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath) =>
 		base.GetChildKeys(earlierKeys,
 			_keyPrefix != null
-				? _keyPrefix + parentPath
+				? _keyPrefix + ":" + parentPath
 		 		: parentPath);
 
 	/// <summary>

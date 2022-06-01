@@ -9,6 +9,7 @@
 		"Mvccpb",
 		"Protobuf",
 		"seealso",
+		"unmanaged",
 		"unwatch"
 	]
 }

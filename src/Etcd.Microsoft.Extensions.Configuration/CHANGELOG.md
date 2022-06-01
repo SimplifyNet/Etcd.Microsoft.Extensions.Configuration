@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.3] - 2022-06-01
+
+### Fixed
+
+- Regression of: IConfigurationSection.GetChildren returns empty result (#2)
+
 ## [1.0.2] - 2022-05-29
 
 ### Fixed

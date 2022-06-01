@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 using Etcd.Microsoft.Extensions.Configuration.Auth;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
-using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core;
@@ -34,6 +34,7 @@ public class ConfigurationBuilderTests
 
 		Assert.IsNotNull(config);
 		Assert.IsTrue(config.GetChildren().Any());
+		Assert.IsTrue(testAppSection.GetChildren().Any());
 
 		Assert.AreEqual("Item 1 value", testSection["Item1"]);
 		Assert.AreEqual("Item 2 value", testSection["Item2"]);
