@@ -131,7 +131,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		if (_unwatchOnDispose)
 			StopWatchAll();
 
-		_client.Dispose();
+		_client?.Dispose();
 	}
 
 	/// <summary>
