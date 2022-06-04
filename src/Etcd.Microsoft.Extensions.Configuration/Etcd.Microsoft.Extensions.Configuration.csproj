@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;netstandard2.1;netstandard2.0;net462</TargetFrameworks>
+		<TargetFrameworks>net6.0;netstandard2.1</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -8,7 +8,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-		<Version>1.0.3</Version>
+		<Version>2.0</Version>
 
 		<Description>Etcd based configuration provider for Microsoft.Extensions.Configuration</Description>
 		<Authors>Simplify community</Authors>
@@ -23,11 +23,8 @@
 		<PackageReleaseNotes>See https://github.com/SimplifyNet/Etcd.Microsoft.Extensions.Configuration/tree/master/src/Etcd.Microsoft.Extensions.Configuration/CHANGELOG.md for details</PackageReleaseNotes>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="dotnet-etcd" Version="4.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
-		<PackageReference Include="Grpc.Core" Version="2.46.3" />
+		<PackageReference Include="dotnet-etcd" Version="5.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\..\images\icon.png" Pack="true" Visible="false" PackagePath="" />

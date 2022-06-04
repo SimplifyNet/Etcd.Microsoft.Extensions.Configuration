@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0] - 2022-06-04
+
+### Removed
+
+- .NET Standard 2.0 support
+- .NET Framework 4.6.2 support
+
+### Dependencies
+
+- dotnet-etcd bump to 5.2
+- Microsoft.Extensions.Configuration bump to 6.0.1
+
 ## [1.0.3] - 2022-06-01
 
 ### Fixed

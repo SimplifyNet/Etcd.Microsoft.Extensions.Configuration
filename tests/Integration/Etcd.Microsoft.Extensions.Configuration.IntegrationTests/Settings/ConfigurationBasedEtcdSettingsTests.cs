@@ -1,8 +1,8 @@
-﻿using Etcd.Microsoft.Extensions.Configuration.Settings;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Etcd.Microsoft.Extensions.Configuration.Settings;
 using NUnit.Framework;
 
-namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core.Settings;
+namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Settings;
 
 [TestFixture]
 public class ConfigurationBasedEtcdSettingsTests
@@ -24,6 +24,5 @@ public class ConfigurationBasedEtcdSettingsTests
 		// Assert
 
 		Assert.AreEqual("http://localhost:2379", settings.ConnectionString);
-		Assert.AreEqual("1234321", settings.CertificateData);
 	}
 }

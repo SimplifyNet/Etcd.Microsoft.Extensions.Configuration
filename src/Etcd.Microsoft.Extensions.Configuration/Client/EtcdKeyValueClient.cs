@@ -10,6 +10,7 @@ using Etcd.Microsoft.Extensions.Configuration.Watch;
 using Etcdserverpb;
 using Google.Protobuf;
 using Grpc.Core;
+
 using Convert = Etcd.Microsoft.Extensions.Configuration.Util.Convert;
 
 namespace Etcd.Microsoft.Extensions.Configuration.Client;
@@ -130,7 +131,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		if (_unwatchOnDispose)
 			StopWatchAll();
 
-		_client.Dispose();
+		_client?.Dispose();
 	}
 
 	/// <summary>
@@ -166,7 +167,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	private Metadata GetMetadata() =>
 		new()
 		{
-			new("token", _token)
+			new("token", _token!)
 		};
 
 	private void CheckIsAuthenticated()

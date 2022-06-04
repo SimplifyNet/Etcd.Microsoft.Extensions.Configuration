@@ -9,9 +9,5 @@ public class EnvironmentSettingsFactory
 	/// Creates this instance.
 	/// </summary>
 	/// <returns></returns>
-	public static IEtcdSettings Create() =>
-		new EtcdSettings(EtcdApplicationEnvironment.ConnectionString,
-			!string.IsNullOrEmpty(EtcdApplicationEnvironment.CaCertificateFilePath)
-				? EtcdApplicationEnvironment.GetCaCertificateData()
-				: null);
+	public static IEtcdSettings Create() => new EtcdSettings(EtcdApplicationEnvironment.ConnectionString);
 }

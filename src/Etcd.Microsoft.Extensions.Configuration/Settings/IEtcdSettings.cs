@@ -12,12 +12,4 @@ public interface IEtcdSettings
 	/// The connection string.
 	/// </value>
 	string? ConnectionString { get; }
-
-	/// <summary>
-	/// Gets the certificate data.
-	/// </summary>
-	/// <value>
-	/// The certificate data.
-	/// </value>
-	string? CertificateData { get; }
 }

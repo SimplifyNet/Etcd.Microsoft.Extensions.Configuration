@@ -31,7 +31,6 @@ public class ConfigurationBasedEtcdSettings : IEtcdSettings
 			throw new EtcdConfigurationException($"`{configurationSectionName}` configuration section is missing");
 
 		ConnectionString = section[nameof(ConnectionString)] ?? throw new EtcdConfigurationException($"'{nameof(ConnectionString)}' is missing in configuration");
-		CertificateData = section[nameof(CertificateData)];
 	}
 
 	/// <summary>
@@ -41,12 +40,4 @@ public class ConfigurationBasedEtcdSettings : IEtcdSettings
 	/// The connection string.
 	/// </value>
 	public string ConnectionString { get; }
-
-	/// <summary>
-	/// Gets the certificate data.
-	/// </summary>
-	/// <value>
-	/// The certificate data.
-	/// </value>
-	public string? CertificateData { get; }
 }
