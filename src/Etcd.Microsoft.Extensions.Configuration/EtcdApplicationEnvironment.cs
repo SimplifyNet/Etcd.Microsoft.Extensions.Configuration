@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Etcd.Microsoft.Extensions.Configuration;
 
@@ -14,7 +13,6 @@ public static class EtcdApplicationEnvironment
 	public const string ConnectionStringEnvironmentVariableName = "ETCD_CLIENT_CONNECTION_STRING";
 
 	private static string? _connectionString;
-
 
 	/// <summary>
 	/// Gets or sets the connection string.
