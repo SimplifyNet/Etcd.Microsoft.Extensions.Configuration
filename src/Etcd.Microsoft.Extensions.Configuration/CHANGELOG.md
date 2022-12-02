@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.1] - 2022-12-02
+
+### Fixes
+
+- No options read from ETCD when user has permission to read all keys (#3)
+
 ## [2.0.0] - 2022-06-04
 
 ### Removed
