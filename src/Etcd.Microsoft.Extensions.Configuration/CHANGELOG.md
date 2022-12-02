@@ -2,7 +2,7 @@
 
 ## [2.0.1] - 2022-12-02
 
-### Fixes
+### Fixed
 
 - No options read from ETCD when user has permission to read all keys (#3)
 
