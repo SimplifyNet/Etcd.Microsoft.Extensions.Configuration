@@ -150,7 +150,14 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		_userName = credentials.UserName;
 	}
 
-	private IEnumerable<Mvccpb.KeyValue> GetKeys(string prefixKey) => _client.GetRange(prefixKey, GetMetadata()).Kvs;
+	private IEnumerable<Mvccpb.KeyValue> GetKeys(string prefixKey)
+	{
+		// Fix to correct read all keys
+		if (prefixKey == "\0")
+			prefixKey = "";
+
+		return _client.GetRange(prefixKey, GetMetadata()).Kvs;
+	}
 
 	private IEnumerable<string> GetRoles() =>
 		_client.UserGet(new AuthUserGetRequest
