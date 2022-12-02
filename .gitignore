@@ -352,3 +352,5 @@ MigrationBackup/
 # Coverage files ignore
 *lcov.info
 lcov*.info
+
+coverage.json
