@@ -23,9 +23,10 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	private readonly IEtcdClientFactory _clientFactory;
 	private readonly bool _enableWatch;
 	private readonly bool _unwatchOnDispose;
-
 	private readonly IList<long> _watchIDs = new List<long>();
 	private readonly object _locker = new();
+
+	private bool _isDisposed;
 
 	private string? _userName;
 	private string? _token;
@@ -56,7 +57,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	/// <summary>
 	/// Finalizes an instance of the <see cref="EtcdKeyValueClient"/> class.
 	/// </summary>
-	~EtcdKeyValueClient() => Dispose();
+	~EtcdKeyValueClient() => Dispose(false);
 
 	/// <summary>
 	/// Occurs when watch callback is received.
@@ -127,10 +128,25 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	/// </summary>
 	public void Dispose()
 	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	/// <summary>
+	/// Releases unmanaged and - optionally - managed resources.
+	/// </summary>
+	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!disposing || _isDisposed)
+			return;
+
 		if (_unwatchOnDispose)
 			StopWatchAll();
 
 		_client.Dispose();
+
+		_isDisposed = true;
 	}
 
 	/// <summary>

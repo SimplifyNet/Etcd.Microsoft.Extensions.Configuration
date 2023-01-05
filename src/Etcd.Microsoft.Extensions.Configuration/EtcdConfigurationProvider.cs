@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
 using Etcd.Microsoft.Extensions.Configuration.Client;
 using Etcd.Microsoft.Extensions.Configuration.Watch;
+using Microsoft.Extensions.Configuration;
 
 namespace Etcd.Microsoft.Extensions.Configuration;
 
@@ -17,6 +17,8 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 
 	private readonly object _locker = new();
 
+	private bool _isDisposed;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="EtcdConfigurationProvider" /> class.
 	/// </summary>
@@ -29,6 +31,8 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 
 		_client.WatchCallback += OnWatchCallback;
 	}
+
+	~EtcdConfigurationProvider() => Dispose(false);
 
 	/// <summary>
 	/// Loads configuration values from the source represented by this <see cref="T:Microsoft.Extensions.Configuration.IConfigurationProvider" />.
@@ -62,7 +66,25 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	/// <summary>
 	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 	/// </summary>
-	public void Dispose() => _client.Dispose();
+	public void Dispose()
+	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	/// <summary>
+	/// Releases unmanaged and - optionally - managed resources.
+	/// </summary>
+	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!disposing || _isDisposed)
+			return;
+
+		_client.Dispose();
+
+		_isDisposed = true;
+	}
 
 	private void OnWatchCallback(IEnumerable<WatchEvent> events)
 	{
