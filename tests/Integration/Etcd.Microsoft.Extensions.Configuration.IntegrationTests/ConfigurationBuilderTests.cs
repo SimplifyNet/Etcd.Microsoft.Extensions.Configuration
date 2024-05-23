@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Configuration;
 using Etcd.Microsoft.Extensions.Configuration.Auth;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests;
@@ -32,17 +32,17 @@ public class ConfigurationBuilderTests
 
 		// Assert
 
-		Assert.IsNotNull(config);
-		Assert.IsTrue(config.GetChildren().Any());
-		Assert.IsTrue(testAppSection.GetChildren().Any());
+		Assert.That(config, Is.Not.Null);
+		Assert.That(config.GetChildren().Any());
+		Assert.That(testAppSection.GetChildren().Any());
 
-		Assert.AreEqual("Item 1 value", testSection["Item1"]);
-		Assert.AreEqual("Item 2 value", testSection["Item2"]);
-		Assert.AreEqual("Sub section value 1", testSubSection["Item1"]);
-		Assert.AreEqual("Sub section value 2", testSubSection["Item2"]);
-		Assert.AreEqual(2, list.Count);
-		Assert.AreEqual("Item 1", list[0]);
-		Assert.AreEqual("Item 2", list[1]);
-		Assert.AreEqual("1234321", testAppSection["Item1"]);
+		Assert.That(testSection["Item1"], Is.EqualTo("Item 1 value"));
+		Assert.That(testSection["Item2"], Is.EqualTo("Item 2 value"));
+		Assert.That(testSubSection["Item1"], Is.EqualTo("Sub section value 1"));
+		Assert.That(testSubSection["Item2"], Is.EqualTo("Sub section value 2"));
+		Assert.That(list.Count, Is.EqualTo(2));
+		Assert.That(list[0], Is.EqualTo("Item 1"));
+		Assert.That(list[1], Is.EqualTo("Item 2"));
+		Assert.That(testAppSection["Item1"], Is.EqualTo("1234321"));
 	}
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using Etcd.Microsoft.Extensions.Configuration.Settings;
+﻿using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Etcd.Microsoft.Extensions.Configuration.Tests.Settings;
@@ -22,6 +22,6 @@ public class ConfigurationBasedEtcdSettingsTests
 
 		// Assert
 
-		Assert.AreEqual("http://localhost:2379", settings.ConnectionString);
+		Assert.That(settings.ConnectionString, Is.EqualTo("http://localhost:2379"));
 	}
 }
