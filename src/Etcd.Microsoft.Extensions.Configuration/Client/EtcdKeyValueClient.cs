@@ -31,6 +31,8 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	private string? _userName;
 	private string? _token;
 
+	private bool _isDisposed;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="EtcdKeyValueClient" /> class.
 	/// </summary>
@@ -41,6 +43,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	/// <exception cref="ArgumentNullException">clientFactory
 	/// or
 	/// credentials</exception>
+	// ReSharper disable once TooManyDependencies
 	public EtcdKeyValueClient(IEtcdClientFactory clientFactory, ICredentials credentials, bool enableWatch = true, bool unwatchOnDispose = true)
 	{
 		if (clientFactory == null) throw new ArgumentNullException(nameof(clientFactory));
@@ -57,7 +60,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	/// <summary>
 	/// Finalizes an instance of the <see cref="EtcdKeyValueClient"/> class.
 	/// </summary>
-	~EtcdKeyValueClient() => Dispose();
+	~EtcdKeyValueClient() => Dispose(false);
 
 	/// <summary>
 	/// Occurs when watch callback is received.
@@ -82,24 +85,17 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		try
 		{
 			var roles = GetRoles();
-			var permissions = new List<Permission>();
-			var keys = new List<Mvccpb.KeyValue>();
-
-			foreach (var role in roles)
-				permissions.AddRange(GetPermissions(role));
-
-			foreach (var permission in permissions)
-				keys.AddRange(GetKeys(permission.Key.ToStringUtf8()));
+			var permissions = GetAllPermissions(roles);
+			var keys = GetAllKeys(permissions);
 
 			if (_enableWatch)
-				foreach (var item in keys)
-					Watch(item.Key.ToStringUtf8());
+				WatchAll(keys);
 
 			return Convert.ToDictionary(keys);
 		}
 		catch (RpcException e)
 		{
-			throw new EtcdException($"Error reading all keys from etcd provider", e);
+			throw new EtcdException("Error reading all keys from etcd provider", e);
 		}
 	}
 
@@ -126,10 +122,26 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	/// </summary>
 	public void Dispose()
 	{
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	/// <summary>
+	/// Releases unmanaged and - optionally - managed resources.
+	/// </summary>
+	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+	// ReSharper disable once FlagArgument
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!disposing || _isDisposed)
+			return;
+
 		if (_unwatchOnDispose)
 			StopWatchAll();
 
-		_client?.Dispose();
+		_client.Dispose();
+
+		_isDisposed = true;
 	}
 
 	/// <summary>
@@ -162,6 +174,32 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		{
 			Name = _userName
 		}, GetMetadata()).Roles;
+
+	private IList<Permission> GetAllPermissions(IEnumerable<string> roles)
+	{
+		var permissions = new List<Permission>();
+
+		foreach (var role in roles)
+			permissions.AddRange(GetPermissions(role));
+
+		return permissions;
+	}
+
+	private IList<Mvccpb.KeyValue> GetAllKeys(IEnumerable<Permission> permissions)
+	{
+		var keys = new List<Mvccpb.KeyValue>();
+
+		foreach (var permission in permissions)
+			keys.AddRange(GetKeys(permission.Key.ToStringUtf8()));
+
+		return keys;
+	}
+
+	private void WatchAll(IList<Mvccpb.KeyValue> keys)
+	{
+		foreach (var item in keys)
+			Watch(item.Key.ToStringUtf8());
+	}
 
 	private IEnumerable<Permission> GetPermissions(string role) =>
 		_client.RoleGet(new AuthRoleGetRequest
