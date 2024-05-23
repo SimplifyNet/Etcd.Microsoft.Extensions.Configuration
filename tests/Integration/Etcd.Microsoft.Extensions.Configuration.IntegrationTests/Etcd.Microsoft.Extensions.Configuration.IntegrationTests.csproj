@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 
 		<Description>Etcd.Microsoft.Extensions.Configuration integration tests</Description>
@@ -12,8 +12,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="coverlet.msbuild" Version="6.0.*">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.*" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.*" />
