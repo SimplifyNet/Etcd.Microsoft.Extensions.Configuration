@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.1.0] - 2024-05-23
+
+### Dependencies
+
+- dotnet-etcd bump to 5.2.1
+- Microsoft.Extensions.Configuration bump to 8
+
+### Changed
+
+- Full dispose implemented
+
 ## [2.0.1] - 2022-12-02
 
 ### Fixed
