@@ -25,7 +25,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	private readonly bool _enableWatch;
 	private readonly bool _unwatchOnDispose;
 
-	private readonly IList<long> _watchIDs = new List<long>();
+	private readonly IList<long> _watchIDs = [];
 	private readonly object _locker = new();
 
 	private string? _userName;
@@ -75,8 +75,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	/// <summary>
 	/// Gets all keys available to user.
 	/// </summary>
-	/// <returns></returns>
-	public IDictionary<string, string> GetAllKeys()
+	public IDictionary<string, string?> GetAllKeys()
 	{
 		CheckIsAuthenticated();
 
@@ -108,7 +107,6 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	/// Gets the value.
 	/// </summary>
 	/// <param name="key">The key.</param>
-	/// <returns></returns>
 	public string? GetValue(string key)
 	{
 		CheckIsAuthenticated();
@@ -172,10 +170,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		}, GetMetadata()).Perm;
 
 	private Metadata GetMetadata() =>
-		new()
-		{
-			new("token", _token!)
-		};
+		[new Metadata.Entry("token", _token!)];
 
 	private void CheckIsAuthenticated()
 	{

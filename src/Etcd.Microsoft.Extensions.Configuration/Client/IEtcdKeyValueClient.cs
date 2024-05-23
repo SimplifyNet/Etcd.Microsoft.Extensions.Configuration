@@ -27,7 +27,7 @@ public interface IEtcdKeyValueClient : IDisposable
 	/// Gets all keys available to user.
 	/// </summary>
 	/// <returns></returns>
-	IDictionary<string, string> GetAllKeys();
+	IDictionary<string, string?> GetAllKeys();
 
 	/// <summary>
 	/// Gets the value.
