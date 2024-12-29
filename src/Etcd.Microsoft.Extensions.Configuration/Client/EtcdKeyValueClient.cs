@@ -231,16 +231,14 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 				x.Kv.Value.ToStringUtf8())));
 	}
 
-	private Task StopWatchAsync(long watchID)
-	{
-		return _client.Watch(new WatchRequest
+	private Task StopWatchAsync(long watchID) =>
+		_client.WatchAsync(new WatchRequest
 		{
 			CancelRequest = new WatchCancelRequest
 			{
 				WatchId = watchID
 			}
 		}, OnWatchCallback, GetMetadata());
-	}
 
 	private void StopWatchAll()
 	{
@@ -263,11 +261,5 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	}
 
 	private void Watch(string key) =>
-		_client.Watch(new WatchRequest
-		{
-			CreateRequest = new WatchCreateRequest
-			{
-				Key = ByteString.CopyFromUtf8(key)
-			}
-		}, OnWatchCallback, GetMetadata());
+		_client.Watch(key, OnWatchCallback, GetMetadata());
 }
