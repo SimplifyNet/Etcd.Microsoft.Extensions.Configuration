@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using dotnet_etcd;
 using dotnet_etcd.interfaces;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Grpc.Core;
 
 namespace Etcd.Microsoft.Extensions.Configuration.Client;
 
@@ -38,7 +40,13 @@ public class EtcdClientFactory : IEtcdClientFactory
 	{
 		if (string.IsNullOrEmpty(Settings.ConnectionString))
 			throw new EtcdConfigurationException("Connection string is missing, should be passed in AddEtcd parameters or set in environment variables.");
+		var client = new EtcdClient(Settings.ConnectionString);
 
-		return new EtcdClient(Settings.ConnectionString, ssl: Settings.ConnectionString!.StartsWith("https"));
+		return new EtcdClient(Settings.ConnectionString, configureChannelOptions: (options =>
+		{
+			options.Credentials = Settings.ConnectionString!.StartsWith("https")
+				? ChannelCredentials.SecureSsl
+				: ChannelCredentials.Insecure;
+		}));
 	}
 }
