@@ -40,7 +40,6 @@ public class EtcdClientFactory : IEtcdClientFactory
 	{
 		if (string.IsNullOrEmpty(Settings.ConnectionString))
 			throw new EtcdConfigurationException("Connection string is missing, should be passed in AddEtcd parameters or set in environment variables.");
-		var client = new EtcdClient(Settings.ConnectionString);
 
 		return new EtcdClient(Settings.ConnectionString, configureChannelOptions: (options =>
 		{
