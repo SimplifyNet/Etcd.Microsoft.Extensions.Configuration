@@ -23,7 +23,7 @@
 		<PackageReleaseNotes>See https://github.com/SimplifyNet/Etcd.Microsoft.Extensions.Configuration/tree/master/src/Etcd.Microsoft.Extensions.Configuration/CHANGELOG.md for details</PackageReleaseNotes>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="dotnet-etcd" Version="8.0.0" />
+		<PackageReference Include="dotnet-etcd" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 	</ItemGroup>
 	<ItemGroup>
