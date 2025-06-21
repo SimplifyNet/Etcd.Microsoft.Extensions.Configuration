@@ -87,17 +87,16 @@ public static class ConfigurationBuilderExtensions
 		bool enableWatch = true,
 		bool unwatchOnDispose = true)
 	{
-		if (configurationBuilder == null)
-			throw new ArgumentNullException(nameof(configurationBuilder));
+		ArgumentNullException.ThrowIfNull(configurationBuilder);
 
 		var clientFactory = new EtcdClientFactory(settings);
 		var client = new EtcdKeyValueClient(clientFactory, credentials, enableWatch, unwatchOnDispose);
 
-		configurationBuilder.Add(new EtcdConfigurationSource(client));
-
 		if (keyPrefixes != null)
 			foreach (var keyPrefix in keyPrefixes)
 				configurationBuilder.Add(new EtcdConfigurationSource(client, keyPrefix));
+		else
+			configurationBuilder.Add(new EtcdConfigurationSource(client));
 
 		return configurationBuilder;
 	}
