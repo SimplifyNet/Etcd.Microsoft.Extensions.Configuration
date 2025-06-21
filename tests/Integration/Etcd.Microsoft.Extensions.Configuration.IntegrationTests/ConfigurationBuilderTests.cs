@@ -19,7 +19,7 @@ public class ConfigurationBuilderTests
 		var config = new ConfigurationBuilder()
 			.AddEtcd(
 				new Credentials("MyUserName", "passw"),
-				new EtcdSettings("http://localhost:2380"),
+				new EtcdSettings("http://localhost:2379"),
 				"MyPrefix")
 			.Build();
 
