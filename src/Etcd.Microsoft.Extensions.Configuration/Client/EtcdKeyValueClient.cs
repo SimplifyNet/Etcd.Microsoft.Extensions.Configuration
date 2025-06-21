@@ -8,7 +8,7 @@ using Etcd.Microsoft.Extensions.Configuration.Auth;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
 using Etcd.Microsoft.Extensions.Configuration.Watch;
 using Etcdserverpb;
-using Google.Protobuf;
+using Google.Protobuf.Collections;
 using Grpc.Core;
 
 using Convert = Etcd.Microsoft.Extensions.Configuration.Util.Convert;
@@ -46,8 +46,8 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	// ReSharper disable once TooManyDependencies
 	public EtcdKeyValueClient(IEtcdClientFactory clientFactory, ICredentials credentials, bool enableWatch = true, bool unwatchOnDispose = true)
 	{
-		if (clientFactory == null) throw new ArgumentNullException(nameof(clientFactory));
-		if (credentials == null) throw new ArgumentNullException(nameof(credentials));
+		ArgumentNullException.ThrowIfNull(clientFactory);
+		ArgumentNullException.ThrowIfNull(credentials);
 
 		_client = clientFactory.Create();
 		_clientFactory = clientFactory;
@@ -160,7 +160,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		_userName = credentials.UserName;
 	}
 
-	private IEnumerable<Mvccpb.KeyValue> GetKeys(string prefixKey)
+	private RepeatedField<Mvccpb.KeyValue> GetKeys(string prefixKey)
 	{
 		// Fix to correct read all keys
 		if (prefixKey == "\0")
@@ -169,13 +169,13 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		return _client.GetRange(prefixKey, GetMetadata()).Kvs;
 	}
 
-	private IEnumerable<string> GetRoles() =>
+	private RepeatedField<string> GetRoles() =>
 		_client.UserGet(new AuthUserGetRequest
 		{
 			Name = _userName
 		}, GetMetadata()).Roles;
 
-	private IList<Permission> GetAllPermissions(IEnumerable<string> roles)
+	private List<Permission> GetAllPermissions(RepeatedField<string> roles)
 	{
 		var permissions = new List<Permission>();
 
@@ -185,7 +185,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		return permissions;
 	}
 
-	private IList<Mvccpb.KeyValue> GetAllKeys(IEnumerable<Permission> permissions)
+	private List<Mvccpb.KeyValue> GetAllKeys(List<Permission> permissions)
 	{
 		var keys = new List<Mvccpb.KeyValue>();
 
@@ -201,7 +201,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 			Watch(item.Key.ToStringUtf8());
 	}
 
-	private IEnumerable<Permission> GetPermissions(string role) =>
+	private RepeatedField<Permission> GetPermissions(string role) =>
 		_client.RoleGet(new AuthRoleGetRequest
 		{
 			Role = role
@@ -231,7 +231,7 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 				x.Kv.Value.ToStringUtf8())));
 	}
 
-	private Task StopWatchAsync(long watchID) =>
+	private Task<long> StopWatchAsync(long watchID) =>
 		_client.WatchAsync(new WatchRequest
 		{
 			CancelRequest = new WatchCancelRequest

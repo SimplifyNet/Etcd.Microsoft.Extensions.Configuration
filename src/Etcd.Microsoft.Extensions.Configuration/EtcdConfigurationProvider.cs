@@ -71,12 +71,7 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 			foreach (var item in events)
 			{
 				if (item.Type == EventType.Put)
-				{
-					if (Data.ContainsKey(item.Key))
-						Data[item.Key] = item.Value;
-					else
-						Data.Add(item.Key, item.Value);
-				}
+					Data[item.Key] = item.Value;
 				else
 					Data.Remove(item.Key);
 			}

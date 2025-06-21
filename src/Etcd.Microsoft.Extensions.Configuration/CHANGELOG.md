@@ -10,6 +10,10 @@
 
 - Explicit .NET 8, 9 support
 
+### Changed
+
+- Improved internal types performance
+
 ### Dependencies
 
 - dotnet-etcd bump to 8.0.1

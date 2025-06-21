@@ -7,20 +7,13 @@ namespace Etcd.Microsoft.Extensions.Configuration;
 /// Provides etcd based IConfigurationSource implementation
 /// </summary>
 /// <seealso cref="IConfigurationSource" />
-public class EtcdConfigurationSource : IConfigurationSource
+/// <remarks>
+/// Initializes a new instance of the <see cref="EtcdConfigurationSource" /> class.
+/// </remarks>
+/// <param name="client">The key value store.</param>
+/// <param name="keyPrefix">The key prefix.</param>
+public class EtcdConfigurationSource(IEtcdKeyValueClient client, string? keyPrefix = null) : IConfigurationSource
 {
-	private readonly IEtcdKeyValueClient _client;
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="EtcdConfigurationSource" /> class.
-	/// </summary>
-	/// <param name="client">The key value store.</param>
-	/// <param name="keyPrefix">The key prefix.</param>
-	public EtcdConfigurationSource(IEtcdKeyValueClient client, string? keyPrefix = null)
-	{
-		_client = client;
-		KeyPrefix = keyPrefix;
-	}
 
 	/// <summary>
 	/// Gets the key prefix.
@@ -28,7 +21,7 @@ public class EtcdConfigurationSource : IConfigurationSource
 	/// <value>
 	/// The key prefix.
 	/// </value>
-	public string? KeyPrefix { get; }
+	public string? KeyPrefix { get; } = keyPrefix;
 
 	/// <summary>
 	/// Builds the <see cref="T:IConfigurationProvider" /> for this source.
@@ -37,7 +30,7 @@ public class EtcdConfigurationSource : IConfigurationSource
 	/// <returns>
 	/// An <see cref="T:IConfigurationProvider" />
 	/// </returns>
-	public IConfigurationProvider Build(IConfigurationBuilder builder) => new EtcdConfigurationProvider(_client, KeyPrefix);
+	public IConfigurationProvider Build(IConfigurationBuilder builder) => new EtcdConfigurationProvider(client, KeyPrefix);
 
 	/// <summary>
 	/// Converts to string (return etcd connection representation).
@@ -51,6 +44,6 @@ public class EtcdConfigurationSource : IConfigurationSource
 			? $" {KeyPrefix} -"
 			: "";
 
-		return $"Etcd -{applicationInfo} {_client.Settings.ConnectionString}";
+		return $"Etcd -{applicationInfo} {client.Settings.ConnectionString}";
 	}
 }

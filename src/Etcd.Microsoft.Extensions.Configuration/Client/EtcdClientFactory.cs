@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using dotnet_etcd;
 using dotnet_etcd.interfaces;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
