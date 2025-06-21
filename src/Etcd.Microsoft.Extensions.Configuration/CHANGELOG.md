@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.0.0] - Unreleased
+
+### Removed
+
+- .NET 6 support
+
+### Added
+
+- Explicit .NET 8, 9 support
+
+### Dependencies
+
+- dotnet-etcd bump to 8.0.1
+- Microsoft.Extensions.Configuration bump to 9.0.6
+
 ## [2.1.0] - 2024-05-23
 
 ### Dependencies
