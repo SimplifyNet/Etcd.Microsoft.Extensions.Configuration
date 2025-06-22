@@ -12,8 +12,14 @@ namespace Etcd.Microsoft.Extensions.Configuration;
 /// <seealso cref="IConfigurationProvider" />
 public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 {
+	/// <summary>
+	/// Provides the default key prefix separator.
+	/// </summary>
+	public const string DefaultKeyPrefixSeparator = ":";
+
 	private readonly IEtcdKeyValueClient _client;
 	private readonly string? _keyPrefix;
+	private readonly string? _keyPrefixSeparator;
 
 	private readonly object _locker = new();
 
@@ -22,10 +28,12 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	/// </summary>
 	/// <param name="client">The client.</param>
 	/// <param name="keyPrefix">The key prefix.</param>
-	public EtcdConfigurationProvider(IEtcdKeyValueClient client, string? keyPrefix = null)
+	/// <param name="keyPrefixSeparator">The key prefix separator.</param>
+	public EtcdConfigurationProvider(IEtcdKeyValueClient client, string? keyPrefix = null, string? keyPrefixSeparator = DefaultKeyPrefixSeparator)
 	{
 		_client = client;
 		_keyPrefix = keyPrefix;
+		_keyPrefixSeparator = keyPrefixSeparator;
 
 		_client.WatchCallback += OnWatchCallback;
 	}
@@ -46,7 +54,7 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	public override bool TryGet(string key, out string? value) =>
 		base.TryGet(_keyPrefix == null
 						? key
-						: _keyPrefix + ":" + key
+						: _keyPrefix + _keyPrefixSeparator + key
 					, out value);
 
 	/// <summary>Returns the list of keys that this provider has.</summary>
@@ -56,7 +64,7 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	public override IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string? parentPath) =>
 		base.GetChildKeys(earlierKeys,
 			_keyPrefix != null
-				? _keyPrefix + ":" + parentPath
+				? _keyPrefix + _keyPrefixSeparator + parentPath
 		 		: parentPath);
 
 	/// <summary>

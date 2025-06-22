@@ -12,9 +12,12 @@ namespace Etcd.Microsoft.Extensions.Configuration;
 /// </remarks>
 /// <param name="client">The key value store.</param>
 /// <param name="keyPrefix">The key prefix.</param>
-public class EtcdConfigurationSource(IEtcdKeyValueClient client, string? keyPrefix = null) : IConfigurationSource
+/// <param name="keyPrefixSeparator">The key prefix separator.</param>
+public class EtcdConfigurationSource(IEtcdKeyValueClient client,
+	string? keyPrefix = null,
+	string keyPrefixSeparator = EtcdConfigurationProvider.DefaultKeyPrefixSeparator)
+	: IConfigurationSource
 {
-
 	/// <summary>
 	/// Gets the key prefix.
 	/// </summary>
@@ -24,13 +27,21 @@ public class EtcdConfigurationSource(IEtcdKeyValueClient client, string? keyPref
 	public string? KeyPrefix { get; } = keyPrefix;
 
 	/// <summary>
+	/// Gets the key prefix separator.
+	/// </summary>
+	/// <value>
+	/// The key prefix separator.
+	/// </value>
+	public string? KeyPrefixSeparator { get; } = keyPrefixSeparator;
+
+	/// <summary>
 	/// Builds the <see cref="T:IConfigurationProvider" /> for this source.
 	/// </summary>
 	/// <param name="builder">The <see cref="T:IConfigurationBuilder" />.</param>
 	/// <returns>
 	/// An <see cref="T:IConfigurationProvider" />
 	/// </returns>
-	public IConfigurationProvider Build(IConfigurationBuilder builder) => new EtcdConfigurationProvider(client, KeyPrefix);
+	public IConfigurationProvider Build(IConfigurationBuilder builder) => new EtcdConfigurationProvider(client, KeyPrefix, KeyPrefixSeparator);
 
 	/// <summary>
 	/// Converts to string (return etcd connection representation).
