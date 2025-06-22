@@ -13,6 +13,7 @@
 ### Changed
 
 - Before if Key Prefixes were used, then the etcd configuration without prefixes were also added to the Configuration Builder, now it will not and should be added separately if required
+- Keys are now case-insensitive according to official documentation
 - Improved internal types performance
 
 ### Dependencies
