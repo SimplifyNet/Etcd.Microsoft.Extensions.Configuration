@@ -16,11 +16,12 @@ public class ConfigurationBuilderTests
 	{
 		// Arrange
 
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
 		var config = new ConfigurationBuilder()
-			.AddEtcd(
-				new Credentials("MyUserName", "passw"),
-				new EtcdSettings("http://localhost:2379"),
-				"MyPrefix")
+			.AddEtcd(credentials, etcdSettings)
+			.AddEtcd(credentials, etcdSettings, "MyPrefix")
 			.Build();
 
 		// Act
