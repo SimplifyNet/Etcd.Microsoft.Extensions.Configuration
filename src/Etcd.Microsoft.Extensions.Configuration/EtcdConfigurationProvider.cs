@@ -33,7 +33,7 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	/// <summary>
 	/// Loads configuration values from the source represented by this <see cref="T:Microsoft.Extensions.Configuration.IConfigurationProvider" />.
 	/// </summary>
-	public override void Load() => Data = _client.GetAllKeys();
+	public override void Load() => Data = new Dictionary<string, string?>(_client.GetAllKeys(), StringComparer.OrdinalIgnoreCase);
 
 	/// <summary>
 	/// Attempts to find a value with the given key, returns true if one is found, false otherwise.

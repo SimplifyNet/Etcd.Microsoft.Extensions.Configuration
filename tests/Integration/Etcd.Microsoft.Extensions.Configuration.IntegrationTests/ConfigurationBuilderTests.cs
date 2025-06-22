@@ -38,7 +38,7 @@ public class ConfigurationBuilderTests
 		Assert.That(testAppSection.GetChildren().Any());
 
 		Assert.That(testSection["Item1"], Is.EqualTo("Item 1 value"));
-		Assert.That(testSection["Item2"], Is.EqualTo("Item 2 value"));
+		Assert.That(testSection["iTem2"], Is.EqualTo("Item 2 value")); // Case insensitive key access
 		Assert.That(testSubSection["Item1"], Is.EqualTo("Sub section value 1"));
 		Assert.That(testSubSection["Item2"], Is.EqualTo("Sub section value 2"));
 		Assert.That(list.Count, Is.EqualTo(2));
