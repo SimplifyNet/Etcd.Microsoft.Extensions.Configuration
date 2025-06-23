@@ -22,6 +22,7 @@ public class ConfigurationBuilderTests
 		var config = new ConfigurationBuilder()
 			.AddEtcd(credentials, etcdSettings)
 			.AddEtcd(credentials, etcdSettings, "MyPrefix")
+			.AddEtcd(credentials, etcdSettings, "MyComplex/Prefix", "/")
 			.Build();
 
 		// Act
@@ -30,12 +31,14 @@ public class ConfigurationBuilderTests
 		var testSubSection = testSection.GetSection("SubSection");
 		var list = testSection.GetSection("ArraySection").Get<List<string>>();
 		var testAppSection = config.GetSection("TestAppSection");
+		var complexPrefixSection = config.GetSection("Settings");
 
 		// Assert
 
 		Assert.That(config, Is.Not.Null);
 		Assert.That(config.GetChildren().Any());
 		Assert.That(testAppSection.GetChildren().Any());
+		Assert.That(complexPrefixSection.GetChildren().Any());
 
 		Assert.That(testSection["Item1"], Is.EqualTo("Item 1 value"));
 		Assert.That(testSection["iTem2"], Is.EqualTo("Item 2 value")); // Case insensitive key access
@@ -45,5 +48,7 @@ public class ConfigurationBuilderTests
 		Assert.That(list[0], Is.EqualTo("Item 1"));
 		Assert.That(list[1], Is.EqualTo("Item 2"));
 		Assert.That(testAppSection["Item1"], Is.EqualTo("1234321"));
+
+		Assert.That(complexPrefixSection["TestKey"], Is.EqualTo("Test value"));
 	}
 }
