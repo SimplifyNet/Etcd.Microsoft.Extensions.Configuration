@@ -9,6 +9,7 @@
 ### Added
 
 - Explicit .NET 8, 9 support
+- Configurable Key Prefix separator
 
 ### Changed
 
