@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.0] - Unreleased
+## [3.0.0] - 2025-06-26
 
 ### Removed
 
@@ -9,12 +9,12 @@
 ### Added
 
 - Explicit .NET 8, 9 support
-- Configurable Key Prefix separator
+- Configurable Key Prefix separator (#5)
 
 ### Changed
 
-- Before if Key Prefixes were used, then the etcd configuration without prefixes were also added to the Configuration Builder, now it will not and should be added separately if required
-- Keys are now case-insensitive according to official documentation
+- Before if Key Prefixes were used, then the etcd configuration without prefixes were also added to the Configuration Builder, now it will not and should be added separately if required (#7)
+- Keys and prefixes are now case-insensitive according to official documentation (#6)
 - Improved internal types performance
 
 ### Dependencies
