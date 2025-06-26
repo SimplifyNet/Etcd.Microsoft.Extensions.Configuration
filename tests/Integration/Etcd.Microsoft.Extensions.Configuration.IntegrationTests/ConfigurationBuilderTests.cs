@@ -22,7 +22,7 @@ public class ConfigurationBuilderTests
 		var config = new ConfigurationBuilder()
 			.AddEtcd(credentials, etcdSettings)
 			.AddEtcd(credentials, etcdSettings, "MyPrefix")
-			.AddEtcd(credentials, etcdSettings, "MyComplex/Prefix", "/")
+			.AddEtcd(credentials, etcdSettings, "MYCOMPLEX/prefix", "/")
 			.Build();
 
 		// Act
