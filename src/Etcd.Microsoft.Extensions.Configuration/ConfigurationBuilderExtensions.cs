@@ -98,8 +98,6 @@ public static class ConfigurationBuilderExtensions
 	{
 		ArgumentNullException.ThrowIfNull(configurationBuilder);
 
-		credentials = EnvironmentCredentialsFactory.TryCreate() ?? credentials;
-
 		var clientFactory = new EtcdClientFactory(settings);
 		var client = new EtcdKeyValueClient(clientFactory, credentials, enableWatch, unwatchOnDispose);
 

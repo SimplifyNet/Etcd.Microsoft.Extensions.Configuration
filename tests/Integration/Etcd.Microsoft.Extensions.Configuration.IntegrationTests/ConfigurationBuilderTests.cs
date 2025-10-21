@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Etcd.Microsoft.Extensions.Configuration.Auth;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
@@ -26,7 +27,38 @@ public class ConfigurationBuilderTests
 			.Build();
 
 		// Act
+		PerformTest(config);
+	}
 
+	[Test]
+	public void Build_WithSettingsFromEtcdAndCredentialsFromEnvironment_ValuesLoaded()
+	{
+		// Arrange
+
+		Environment.SetEnvironmentVariable("ETCD_TEST_USERNAME", "MyUserName");
+		Environment.SetEnvironmentVariable("ETCD_TEST_PASSWORD", "passw");
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var envCredentials = Credentials.WithOverrideFromEnvironmentVariables("foo", "bar", "ETCD_TEST_USERNAME", "ETCD_TEST_PASSWORD");
+		var envCredentials2 = Credentials.WithOverrideFromEnvironmentVariables("MyUserName", "bar", "ETCD_TEST_PASSWORD");
+
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var config = new ConfigurationBuilder()
+			.AddEtcd(credentials, etcdSettings)
+			.AddEtcd(envCredentials, etcdSettings, "MyPrefix")
+			.AddEtcd(envCredentials2, etcdSettings, "MYCOMPLEX/prefix", "/")
+			.Build();
+
+		// Act
+		PerformTest(config);
+
+		// Assert
+		Assert.Pass("Credentials info: " + envCredentials.ToString());
+	}
+
+	private static void PerformTest(IConfigurationRoot config)
+	{
 		var testSection = config.GetSection("TestSection");
 		var testSubSection = testSection.GetSection("SubSection");
 		var list = testSection.GetSection("ArraySection").Get<List<string>>();
@@ -49,6 +81,6 @@ public class ConfigurationBuilderTests
 		Assert.That(list[1], Is.EqualTo("Item 2"));
 		Assert.That(testAppSection["Item1"], Is.EqualTo("1234321"));
 
-		Assert.That(complexPrefixSection["TestKey"], Is.EqualTo("Test value"));
+		Assert.That(complexPrefixSection["TestKey"], Is.EqualTo("Test value")); // This method is just to have a breakpoint target for debugging purposes.
 	}
 }
