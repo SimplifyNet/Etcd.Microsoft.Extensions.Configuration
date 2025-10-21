@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.0] - 2025-10-21
+
+### Added
+
+- Possibility to load credentials from environment variables
+
 ## [3.0.0] - 2025-06-26
 
 ### Removed
