@@ -38,6 +38,7 @@ public class Credentials : ICredentials
 		PasswordSource = passwordSource;
 		Information = information;
 	}
+
 	/// <summary>
 	/// Gets the source of the user name.
 	/// </summary>
@@ -72,7 +73,7 @@ public class Credentials : ICredentials
 	/// <summary>
 	/// Gets the string representation of the credentials.
 	/// </summary>
-	override public string ToString() => Information ?? "Code based credentials";
+	override public string ToString() => Information ?? "etcd code based credentials";
 
 	/// <summary>
 	/// Creates a new credentials instance overriding values from environment variables if they are exists.
@@ -200,20 +201,20 @@ public class Credentials : ICredentials
 
 	private static string FormatUserNameInformation(CredentialsSource userNameSource, string? userNameEnvironmentVariableName = null)
 	{
-		var result = $"UserName source: {userNameSource}";
+		var result = $"etcd user name source: {userNameSource}";
 
 		if (userNameSource == CredentialsSource.EnvironmentVariables)
-			result += $", variable name: {userNameEnvironmentVariableName}";
+			result += $"({userNameEnvironmentVariableName})";
 
 		return result;
 	}
 
 	private static string FormatPassword(CredentialsSource passwordSource, string? passwordEnvironmentVariableName = null)
 	{
-		var result = $"password source: {passwordSource}";
+		var result = $"etcd password source: {passwordSource}";
 
 		if (passwordSource == CredentialsSource.EnvironmentVariables)
-			result += $", variable name: {passwordEnvironmentVariableName}";
+			result += $"({passwordEnvironmentVariableName})";
 
 		return result;
 	}
