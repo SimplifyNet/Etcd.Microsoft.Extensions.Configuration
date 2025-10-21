@@ -81,6 +81,6 @@ public class ConfigurationBuilderTests
 		Assert.That(list[1], Is.EqualTo("Item 2"));
 		Assert.That(testAppSection["Item1"], Is.EqualTo("1234321"));
 
-		Assert.That(complexPrefixSection["TestKey"], Is.EqualTo("Test value")); // This method is just to have a breakpoint target for debugging purposes.
+		Assert.That(complexPrefixSection["TestKey"], Is.EqualTo("Test value"));
 	}
 }
