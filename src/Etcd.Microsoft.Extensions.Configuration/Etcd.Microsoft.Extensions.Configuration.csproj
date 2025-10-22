@@ -19,9 +19,9 @@
 
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 
 		<PackageReleaseNotes>See https://github.com/SimplifyNet/Etcd.Microsoft.Extensions.Configuration/tree/master/src/Etcd.Microsoft.Extensions.Configuration/CHANGELOG.md for details</PackageReleaseNotes>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="dotnet-etcd" Version="8.0.1" />
