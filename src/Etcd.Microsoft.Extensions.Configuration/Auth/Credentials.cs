@@ -204,7 +204,7 @@ public class Credentials : ICredentials
 		var result = $"etcd user name source: {userNameSource}";
 
 		if (userNameSource == CredentialsSource.EnvironmentVariables)
-			result += $"({userNameEnvironmentVariableName})";
+			result += $" ({userNameEnvironmentVariableName})";
 
 		return result;
 	}
@@ -214,7 +214,7 @@ public class Credentials : ICredentials
 		var result = $"etcd password source: {passwordSource}";
 
 		if (passwordSource == CredentialsSource.EnvironmentVariables)
-			result += $"({passwordEnvironmentVariableName})";
+			result += $" ({passwordEnvironmentVariableName})";
 
 		return result;
 	}
