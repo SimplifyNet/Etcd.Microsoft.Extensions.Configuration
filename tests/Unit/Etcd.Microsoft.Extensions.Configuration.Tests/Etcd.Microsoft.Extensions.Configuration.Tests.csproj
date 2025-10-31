@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 
 		<Description>Etcd.Microsoft.Extensions.Configuration integration tests under .NET Core</Description>
@@ -11,13 +11,13 @@
 		<ProjectReference Include="..\..\..\src\Etcd.Microsoft.Extensions.Configuration\Etcd.Microsoft.Extensions.Configuration.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="coverlet.msbuild" Version="3.1.*" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.*" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.*" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.*" />
-		<PackageReference Include="NUnit" Version="3.13.*" />
-		<PackageReference Include="NUnit3TestAdapter" Version="4.2.*" />
-		<PackageReference Include="Moq" Version="4.18.*" />
+		<PackageReference Include="coverlet.msbuild" Version="6.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.*" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.*" />
+		<PackageReference Include="NUnit" Version="4.4.*" />
+		<PackageReference Include="NUnit3TestAdapter" Version="5.2.*" />
+		<PackageReference Include="Moq" Version="4.20.*" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="appsettings.json">

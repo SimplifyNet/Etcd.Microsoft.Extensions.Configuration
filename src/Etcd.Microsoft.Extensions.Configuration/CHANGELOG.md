@@ -2,6 +2,14 @@
 
 ## [1.1.0] - 2025-10-31
 
+### Removed
+
+- .NET 6 explicit support
+
+### Added
+
+- .NET 8 explicit support
+
 ### Added
 
 - Load credentials from environment variables overriding local settings (#10)
@@ -9,7 +17,7 @@
 ### Dependencies
 
 - Grpc.Core bump to 2.46.6
-- Microsoft.Extensions.Configuration bump to 6.0.2
+- Microsoft.Extensions.Configuration bump to 8.0.0
 
 ## [1.0.4] - 2022-12-02
 

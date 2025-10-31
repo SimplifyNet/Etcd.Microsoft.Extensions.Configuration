@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;netstandard2.1;netstandard2.0;net462</TargetFrameworks>
+		<TargetFrameworks>net8.0;netstandard2.1;netstandard2.0;net462</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -24,7 +24,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="dotnet-etcd" Version="4.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
 		<PackageReference Include="Grpc.Core" Version="2.46.6" />
