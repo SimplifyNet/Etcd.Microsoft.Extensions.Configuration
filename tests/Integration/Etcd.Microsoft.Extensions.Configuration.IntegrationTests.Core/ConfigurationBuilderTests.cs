@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Etcd.Microsoft.Extensions.Configuration.Auth;
 using Etcd.Microsoft.Extensions.Configuration.Settings;
 using NUnit.Framework;
+using System;
 
 namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests.Core;
 
@@ -16,15 +17,45 @@ public class ConfigurationBuilderTests
 	{
 		// Arrange
 
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
 		var config = new ConfigurationBuilder()
-			.AddEtcd(
-				new Credentials("MyUserName", "passw"),
-				new EtcdSettings("https://serveraddress:2379"),
-				"MyPrefix")
+			.AddEtcd(credentials, etcdSettings)
+			.AddEtcd(credentials, etcdSettings, "MyPrefix")
 			.Build();
 
 		// Act
+		PerformTest(config);
+	}
 
+	[Test]
+	public void Build_WithSettingsFromEtcdAndCredentialsFromEnvironment_ValuesLoaded()
+	{
+		// Arrange
+
+		Environment.SetEnvironmentVariable("ETCD_TEST_USERNAME", "MyUserName");
+		Environment.SetEnvironmentVariable("ETCD_TEST_PASSWORD", "passw");
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var envCredentials = Credentials.WithOverrideFromEnvironmentVariables("foo", "bar", "ETCD_TEST_USERNAME", "ETCD_TEST_PASSWORD");
+
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var config = new ConfigurationBuilder()
+			.AddEtcd(credentials, etcdSettings)
+			.AddEtcd(envCredentials, etcdSettings, "MyPrefix")
+			.Build();
+
+		// Act
+		PerformTest(config);
+
+		// Assert
+		Assert.Pass("Credentials info: " + envCredentials.ToString());
+	}
+
+	private static void PerformTest(IConfigurationRoot config)
+	{
 		var testSection = config.GetSection("TestSection");
 		var testSubSection = testSection.GetSection("SubSection");
 		var list = testSection.GetSection("ArraySection").Get<List<string>>();
@@ -32,17 +63,17 @@ public class ConfigurationBuilderTests
 
 		// Assert
 
-		Assert.IsNotNull(config);
-		Assert.IsTrue(config.GetChildren().Any());
-		Assert.IsTrue(testAppSection.GetChildren().Any());
+		Assert.That(config, Is.Not.Null);
+		Assert.That(config.GetChildren().Any());
+		Assert.That(testAppSection.GetChildren().Any());
 
-		Assert.AreEqual("Item 1 value", testSection["Item1"]);
-		Assert.AreEqual("Item 2 value", testSection["Item2"]);
-		Assert.AreEqual("Sub section value 1", testSubSection["Item1"]);
-		Assert.AreEqual("Sub section value 2", testSubSection["Item2"]);
-		Assert.AreEqual(2, list.Count);
-		Assert.AreEqual("Item 1", list[0]);
-		Assert.AreEqual("Item 2", list[1]);
-		Assert.AreEqual("1234321", testAppSection["Item1"]);
+		Assert.That(testSection["Item1"], Is.EqualTo("Item 1 value"));
+		Assert.That(testSection["Item2"], Is.EqualTo("Item 2 value")); // Case insensitive key access
+		Assert.That(testSubSection["Item1"], Is.EqualTo("Sub section value 1"));
+		Assert.That(testSubSection["Item2"], Is.EqualTo("Sub section value 2"));
+		Assert.That(list.Count, Is.EqualTo(2));
+		Assert.That(list[0], Is.EqualTo("Item 1"));
+		Assert.That(list[1], Is.EqualTo("Item 2"));
+		Assert.That(testAppSection["Item1"], Is.EqualTo("1234321"));
 	}
 }

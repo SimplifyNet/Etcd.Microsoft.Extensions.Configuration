@@ -171,10 +171,9 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 		}, GetMetadata()).Perm;
 
 	private Metadata GetMetadata() =>
-		new()
-		{
-			new("token", _token)
-		};
+		[
+			new("token", _token!)
+		];
 
 	private void CheckIsAuthenticated()
 	{
