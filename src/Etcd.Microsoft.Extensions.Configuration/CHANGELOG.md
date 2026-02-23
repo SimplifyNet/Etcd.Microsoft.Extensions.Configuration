@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.1] - 2026-02-23
+
+### Dependencies
+
+- dotnet-etcd bump to 8.1.0
+
 ## [3.1.0] - 2025-10-22
 
 ### Added
