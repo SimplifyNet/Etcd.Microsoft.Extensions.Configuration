@@ -11,7 +11,7 @@
 		<ProjectReference Include="..\..\..\src\Etcd.Microsoft.Extensions.Configuration\Etcd.Microsoft.Extensions.Configuration.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="coverlet.msbuild" Version="8.0.0">
+		<PackageReference Include="coverlet.msbuild" Version="8.0.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
