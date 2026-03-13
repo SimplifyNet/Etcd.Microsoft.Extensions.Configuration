@@ -2,13 +2,16 @@
 	"dotnet-test-explorer.testProjectPath": "tests/**/*Tests.csproj",
 	"dotnet-test-explorer.testArguments": "/p:CollectCoverage=true /p:CoverletOutputFormat=lcov /p:CoverletOutput=./coverage/lcov.info",
 	"cSpell.words": [
+		"appsettings",
 		"Authpb",
 		"cref",
 		"Etcdserverpb",
 		"Grpc",
+		"msbuild",
 		"Mvccpb",
 		"Protobuf",
 		"seealso",
+		"snupkg",
 		"unmanaged",
 		"unwatch"
 	]

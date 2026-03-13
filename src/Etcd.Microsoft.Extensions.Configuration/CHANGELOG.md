@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.1.2] - 2026-03-13
+
+### Added
+
+- Explicit .NET 10 support
+
+### Dependencies
+
+- Microsoft.Extensions.Configuration bump to 10.0.5
+
 ## [3.1.1] - 2026-02-23
 
 ### Dependencies
