@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -8,7 +8,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
-		<Version>3.1.1</Version>
+		<Version>3.1.2</Version>
 
 		<Description>Etcd based configuration provider for Microsoft.Extensions.Configuration</Description>
 		<Authors>Simplify community</Authors>
@@ -25,7 +25,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="dotnet-etcd" Version="8.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="..\..\images\icon.png" Pack="true" Visible="false" PackagePath="" />
