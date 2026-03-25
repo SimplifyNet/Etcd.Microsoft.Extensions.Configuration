@@ -34,12 +34,12 @@ resource "etcd_key" "test_app_settings_item1" {
 }
 
 resource "etcd_key" "array_section_item1" {
-  key   = "${var.prefix}ArraySection${var.delimiter}Item1"
+  key   = "${var.prefix}TestSection${var.delimiter}ArraySection${var.delimiter}Item1"
   value = "Item 1"
 }
 
 resource "etcd_key" "array_section_item2" {
-  key   = "${var.prefix}ArraySection${var.delimiter}Item2"
+  key   = "${var.prefix}TestSection${var.delimiter}ArraySection${var.delimiter}Item2"
   value = "Item 2"
 }
 
