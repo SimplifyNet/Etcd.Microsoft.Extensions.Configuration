@@ -13,7 +13,7 @@ namespace Etcd.Microsoft.Extensions.Configuration.IntegrationTests;
 public class ConfigurationBuilderTests
 {
 	[Test]
-	public void Build_WithSettingsFromEtcd_ValuesLoaded()
+	public void Build_WithSettingsFromEtcd_ValuesLoaded_AllAddEtcds()
 	{
 		// Arrange
 
@@ -23,6 +23,55 @@ public class ConfigurationBuilderTests
 		var config = new ConfigurationBuilder()
 			.AddEtcd(credentials, etcdSettings)
 			.AddEtcd(credentials, etcdSettings, "MyPrefix")
+			.AddEtcd(credentials, etcdSettings, "MYCOMPLEX/prefix", "/")
+			.Build();
+
+		// Act
+		PerformTest(config);
+	}
+
+	[Test]
+	public void Build_WithSettingsFromEtcd_ValuesLoaded_NoPrefix()
+	{
+		// Arrange
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var config = new ConfigurationBuilder()
+			.AddEtcd(credentials, etcdSettings)
+			.Build();
+
+		// Act
+		PerformTest(config);
+	}
+
+	[Test]
+	public void Build_WithSettingsFromEtcd_ValuesLoaded_SimplePrefix()
+	{
+		// Arrange
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var config = new ConfigurationBuilder()
+			.AddEtcd(credentials, etcdSettings, "MyPrefix")
+			.Build();
+
+		// Act
+		PerformTest(config);
+	}
+
+
+	[Test]
+	public void Build_WithSettingsFromEtcd_ValuesLoaded_ComplexPrefix()
+	{
+		// Arrange
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var config = new ConfigurationBuilder()
 			.AddEtcd(credentials, etcdSettings, "MYCOMPLEX/prefix", "/")
 			.Build();
 
@@ -56,6 +105,7 @@ public class ConfigurationBuilderTests
 		// Assert
 		Assert.Pass("Credentials info: " + envCredentials.ToString());
 	}
+
 
 	private static void PerformTest(IConfigurationRoot config)
 	{
