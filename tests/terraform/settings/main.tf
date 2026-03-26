@@ -45,7 +45,7 @@ resource "etcd_key" "array_section_item2" {
 
 resource "etcd_key" "settings_test_key" {
   key   = "${var.prefix}Settings${var.delimiter}TestKey"
-  value = "Test value"
+  value = var.prefix == "MYCOMPLEX/prefix/" ? "Test value2" : "Test value"
 }
 
 

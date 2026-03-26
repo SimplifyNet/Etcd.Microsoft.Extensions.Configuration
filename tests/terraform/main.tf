@@ -11,24 +11,26 @@ terraform {
 
 provider "etcd" {
   username  = "root"
-  password  = "YOURPASSWORD"
+  password  = "snBr8ss9ls"
   endpoints = "http://localhost:2379"
   skip_tls  = true
 }
 
 module "settings" {
-  source = "./settings"
-  prefix = ""
+  source    = "./settings"
+  prefix    = ""
+  delimiter = ":"
 }
 
 module "prefix1" {
-  source = "./settings"
-  prefix = "MyPrefix:"
+  source    = "./settings"
+  prefix    = "MyPrefix:"
+  delimiter = ":"
 }
 
 module "prefix2" {
   source    = "./settings"
   prefix    = "MYCOMPLEX/prefix/"
-  delimiter = "/"
+  delimiter = ":"
 }
 

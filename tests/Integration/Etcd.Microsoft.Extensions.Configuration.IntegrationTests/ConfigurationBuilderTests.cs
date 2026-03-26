@@ -74,10 +74,65 @@ public class ConfigurationBuilderTests
 		var config = new ConfigurationBuilder()
 			.AddEtcd(credentials, etcdSettings, "MYCOMPLEX/prefix", "/")
 			.Build();
+		var testSection = config.GetSection("Settings");
+		Assert.That(testSection["TestKey"], Is.EqualTo("Test value2"));
 
 		// Act
 		PerformTest(config);
 	}
+
+	[Test]
+	public void Build_WithSettingsFromEtcd_ValuesLoaded_ComplexPrefixOverride()
+	{
+		// Arrange
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var config = new ConfigurationBuilder()
+			.AddEtcd(credentials, etcdSettings)
+			.AddEtcd(credentials, etcdSettings, "MYCOMPLEX/prefix", "/")
+			.Build();
+
+		// Act
+		PerformTest(config);
+
+		// Assert
+
+		// Only in key MYCOMPLEX/prefix/TestKey the value is "Test value2",
+		// So because MYCOMPLEX/prefix is loaded after the root folder,
+		// the value from MyCOMPLEX/prefix overrides the value in the root folder.
+		var testSection = config.GetSection("Settings");
+		Assert.That(testSection["TestKey"], Is.EqualTo("Test value2"));
+	}
+
+	[Test]
+	public void Build_WithSettingsFromEtcd_ValuesLoaded_ComplexPrefixOverride_WrongOrder()
+	{
+		// Arrange
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var config = new ConfigurationBuilder()
+			.AddEtcd(credentials, etcdSettings, "MYCOMPLEX/prefix", "/")
+			.AddEtcd(credentials, etcdSettings)
+			.Build();
+
+		// Act
+		PerformTest(config);
+
+		// Assert
+
+		// Only in key MYCOMPLEX/prefix/TestKey the value is "Test value2",
+		// But because MYCOMPLEX/prefix is loaded before the other one,
+		// the value from etcd that is loaded is overridden
+		// by the value in the root folder.
+		// .
+		var testSection = config.GetSection("Settings");
+		Assert.That(testSection["TestKey"], Is.EqualTo("Test value"));
+	}
+
 
 	[Test]
 	public void Build_WithSettingsFromEtcdAndCredentialsFromEnvironment_ValuesLoaded()
@@ -88,6 +143,7 @@ public class ConfigurationBuilderTests
 		Environment.SetEnvironmentVariable("ETCD_TEST_PASSWORD", "passw");
 
 		var credentials = new Credentials("MyUserName", "passw");
+
 		var envCredentials = Credentials.WithOverrideFromEnvironmentVariables("foo", "bar", "ETCD_TEST_USERNAME", "ETCD_TEST_PASSWORD");
 		var envCredentials2 = Credentials.WithOverrideFromEnvironmentVariables("MyUserName", "bar", "ETCD_TEST_PASSWORD");
 
@@ -103,6 +159,7 @@ public class ConfigurationBuilderTests
 		PerformTest(config);
 
 		// Assert
+
 		Assert.Pass("Credentials info: " + envCredentials.ToString());
 	}
 
@@ -131,6 +188,6 @@ public class ConfigurationBuilderTests
 		Assert.That(list[1], Is.EqualTo("Item 2"));
 		Assert.That(testAppSection["Item1"], Is.EqualTo("1234321"));
 
-		Assert.That(complexPrefixSection["TestKey"], Is.EqualTo("Test value"));
+		Assert.That(complexPrefixSection["TestKey"], Does.StartWith("Test value"));
 	}
 }
