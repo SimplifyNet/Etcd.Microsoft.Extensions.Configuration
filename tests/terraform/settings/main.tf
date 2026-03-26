@@ -9,42 +9,42 @@ terraform {
 }
 
 resource "etcd_key" "test_section_item1" {
-  key   = "${var.prefix}TestSection${var.delimiter}Item1"
+  key   = "${var.prefix}TestSection:Item1"
   value = "Item 1 value"
 }
 
 resource "etcd_key" "test_section_item2" {
-  key   = "${var.prefix}TestSection${var.delimiter}Item2"
+  key   = "${var.prefix}TestSection:Item2"
   value = "Item 2 value"
 }
 
 resource "etcd_key" "test_section_subsection_item1" {
-  key   = "${var.prefix}TestSection${var.delimiter}SubSection${var.delimiter}Item1"
+  key   = "${var.prefix}TestSection:SubSection:Item1"
   value = "Sub section value 1"
 }
 
 resource "etcd_key" "test_section_subsection_item2" {
-  key   = "${var.prefix}TestSection${var.delimiter}SubSection${var.delimiter}Item2"
+  key   = "${var.prefix}TestSection:SubSection:Item2"
   value = "Sub section value 2"
 }
 
 resource "etcd_key" "test_app_settings_item1" {
-  key   = "${var.prefix}TestAppSection${var.delimiter}Item1"
+  key   = "${var.prefix}TestAppSection:Item1"
   value = "1234321"
 }
 
 resource "etcd_key" "array_section_item1" {
-  key   = "${var.prefix}TestSection${var.delimiter}ArraySection${var.delimiter}Item1"
+  key   = "${var.prefix}TestSection:ArraySection:Item1"
   value = "Item 1"
 }
 
 resource "etcd_key" "array_section_item2" {
-  key   = "${var.prefix}TestSection${var.delimiter}ArraySection${var.delimiter}Item2"
+  key   = "${var.prefix}TestSection:ArraySection:Item2"
   value = "Item 2"
 }
 
 resource "etcd_key" "settings_test_key" {
-  key   = "${var.prefix}Settings${var.delimiter}TestKey"
+  key   = "${var.prefix}Settings:TestKey"
   value = var.prefix == "MYCOMPLEX/prefix/" ? "Test value2" : "Test value"
 }
 

@@ -17,20 +17,16 @@ provider "etcd" {
 }
 
 module "settings" {
-  source    = "./settings"
-  prefix    = ""
-  delimiter = ":"
+  source = "./settings"
 }
 
 module "prefix1" {
-  source    = "./settings"
-  prefix    = "MyPrefix:"
-  delimiter = ":"
+  source = "./settings"
+  prefix = "MyPrefix:"
 }
 
 module "prefix2" {
-  source    = "./settings"
-  prefix    = "MYCOMPLEX/prefix/"
-  delimiter = ":"
+  source = "./settings"
+  prefix = "MYCOMPLEX/prefix/"
 }
 
