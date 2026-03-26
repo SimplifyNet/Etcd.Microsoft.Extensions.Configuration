@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~>1.11.5"
+  required_version = "~> 1.11"
   required_providers {
     etcd = {
       source  = "Ferlab-Ste-Justine/etcd"
