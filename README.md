@@ -62,6 +62,47 @@ var myKeyValue = mySection["MyKeyName"];
 
 Settings can be mixed from different locations.
 
+## Testing
+
+To setup an integration test environment, make sure you have an etcd instance running on the standard port, without ssl: http://localhost:2379
+
+On ubuntu, simply run 
+
+```
+sudo apt-get install etcd-server etcd-client
+```
+
+Create a root account and enable authentication
+
+```
+etcdctl --endpoints=http://localhost:2379 user add root
+Password of root:
+```
+enable authentication:
+```
+etcdctl --endpoints=http://localhost:2379 auth enable
+```
+
+For your convenience, terraform files are included in the folder tests/terraform/
+
+In the file ```tests/terraform/main.tf``` replace the password with the one you just used when creating the root user.
+
+in the tests/terraform folder, init terraform:
+
+```
+terraform init
+```
+to see what changes will be made:
+```
+terraform plan
+```
+to execute the changes, and create the keys:
+```
+terraform apply
+```
+
+then run the tests from the src folder
+
 ## Contributing
 
 There are many ways in which you can participate in the project. Like most open-source software projects, contributing code is just one of many ways you can help improve. Some of the things you could help out with are:
