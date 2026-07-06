@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Etcd.Microsoft.Extensions.Configuration/Etcd.Microsoft.Extensions.Configuration.csproj" />
+  <Project Path="Etcd.Microsoft.Extensions.Configuration.Tests/Etcd.Microsoft.Extensions.Configuration.Tests.csproj" />
+  <Project Path="Etcd.Microsoft.Extensions.Configuration.IntegrationTests/Etcd.Microsoft.Extensions.Configuration.IntegrationTests.csproj" />
+</Solution>

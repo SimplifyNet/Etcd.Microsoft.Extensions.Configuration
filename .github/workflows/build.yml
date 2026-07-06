@@ -9,17 +9,24 @@ defaults:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-latest]
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            test-framework-command: --framework net10.0
 
     steps:
       - name: Code Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v7
 
       - name: Install DotNet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
 
       - name: Restore Dependencies
         run: dotnet restore
@@ -28,14 +35,14 @@ jobs:
         run: dotnet build --no-restore -c Release
 
       - name: Perform Unit Testing
-        run: dotnet test --no-build -c Release --filter TestCategory!=Integration --verbosity minimal
+        run: dotnet test --no-build -c Release ${{ matrix.test-framework-command }} --verbosity normal --filter TestCategory!=Integration
 
       - name: Create Package
         run: dotnet pack --no-build -c Release -o ./publish
 
       - name: Create packages artifact
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Packages
           path: ./src/publish/
