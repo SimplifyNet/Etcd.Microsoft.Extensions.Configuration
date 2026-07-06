@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.3] - 2026-07-06
+
+### Fixed
+
+- Configuration reload not propagating to IOptionsMonitor/IOptionsSnapshot on etcd watch events (#15)
+
 ## [3.1.2] - 2026-03-13
 
 ### Added

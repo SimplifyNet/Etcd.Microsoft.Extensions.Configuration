@@ -84,5 +84,7 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 					Data.Remove(item.Key);
 			}
 		}
+
+		OnReload();
 	}
 }
