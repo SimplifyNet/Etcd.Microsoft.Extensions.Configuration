@@ -74,17 +74,28 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 
 	private void OnWatchCallback(IEnumerable<WatchEvent> events)
 	{
+		var hasChanges = false;
 		lock (_locker)
 		{
 			foreach (var item in events)
 			{
 				if (item.Type == EventType.Put)
-					Data[item.Key] = item.Value;
+				{
+					if (!Data.TryGetValue(item.Key, out var existingValue) || !Equals(existingValue, item.Value))
+					{
+						Data[item.Key] = item.Value;
+						hasChanges = true;
+					}
+				}
 				else
-					Data.Remove(item.Key);
+				{
+					if (Data.Remove(item.Key))
+						hasChanges = true;
+				}
 			}
 		}
 
-		OnReload();
+		if (hasChanges)
+			OnReload();
 	}
 }

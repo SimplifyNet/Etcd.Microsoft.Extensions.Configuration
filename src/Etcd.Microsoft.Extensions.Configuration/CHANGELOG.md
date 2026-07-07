@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.2.1] - 2026-07-07
+
+### Fixed
+
+- Fixed unnecessary configuration reloads when etcd watch events do not change any tracked configuration values.
+
 ## [3.2.0] - 2026-07-06
 
 ### Dependencies
