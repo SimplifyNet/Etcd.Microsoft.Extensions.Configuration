@@ -59,7 +59,7 @@ jobs:
       - name: Extract changelog entry
         run: |
           awk '/^## \[/{if(f) exit; f=1; next} f' \
-            src/Etcd.Microsoft.Extensions.Configuration/CHANGELOG.md \
+            Etcd.Microsoft.Extensions.Configuration/CHANGELOG.md \
             > /tmp/release_notes.md
 
       - name: Create release
