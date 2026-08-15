@@ -9,7 +9,7 @@
 
 Etcd-based configuration provider for Microsoft.Extensions.Configuration.
 
-> Keep in mind that starting from v2, it will work only under Windows 10 or Windows Server 2016 (or later) because the internal gRPC client uses the HTTP/2 protocol for communication (<https://docs.microsoft.com/en-us/answers/questions/310032/2012-r2-net-core-http2.html>).
+> Keep in mind that starting with v2, on Windows it requires Windows 10 or Windows Server 2016 (or later) because the internal gRPC client uses the HTTP/2 protocol for communication (<https://docs.microsoft.com/en-us/answers/questions/310032/2012-r2-net-core-http2.html>).
 
 ## Quick Start
 
