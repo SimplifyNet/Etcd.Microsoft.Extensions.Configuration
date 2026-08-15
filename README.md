@@ -5,7 +5,7 @@
 [![Build Package](https://github.com/SimplifyNet/Etcd.Microsoft.Extensions.Configuration/actions/workflows/build.yml/badge.svg)](https://github.com/SimplifyNet/Etcd.Microsoft.Extensions.Configuration/actions/workflows/build.yml)
 [![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/nuget/Etcd.Microsoft.Extensions.Configuration)](https://libraries.io/nuget/Etcd.Microsoft.Extensions.Configuration)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/SimplifyNet/Etcd.Microsoft.Extensions.Configuration)](https://www.codefactor.io/repository/github/simplifynet/Etcd.Microsoft.Extensions.Configuration)
-![Platform](https://img.shields.io/badge/platform-.NET%209.0%20%7C%20.NET%208.0-lightgrey)
+![Platform](https://img.shields.io/badge/platform-.NET%2010.0%20%7C%20.NET%209.0%20%7C%20.NET%208.0-lightgrey)
 
 Etcd-based configuration provider for Microsoft.Extensions.Configuration.
 
@@ -64,9 +64,9 @@ Settings can be mixed from different locations.
 
 ## Testing
 
-To setup an integration test environment, make sure you have an etcd instance running on the standard port, without ssl: http://localhost:2379
+To set up an integration test environment, make sure you have an etcd instance running on the standard port, without SSL: http://localhost:2379
 
-On ubuntu, simply run 
+On Ubuntu, simply run 
 
 ```
 sudo apt-get install etcd-server etcd-client
@@ -78,7 +78,7 @@ Create a root account and enable authentication
 etcdctl --endpoints=http://localhost:2379 user add root
 Password of root:
 ```
-enable authentication:
+Enable authentication:
 ```
 etcdctl --endpoints=http://localhost:2379 auth enable
 ```
