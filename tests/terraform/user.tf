@@ -38,15 +38,21 @@ resource "etcd_role" "my_complex_prefix" {
   name = "MyComplexPrefix"
 
   permissions {
-    permission = "read"
+    permission = "readwrite"
     key        = data.etcd_prefix_range_end.mycomplex_prefix.key
     range_end  = data.etcd_prefix_range_end.mycomplex_prefix.range_end
   }
+}
+
+# Write permission on a single key which is also covered by the "TestSection" read role,
+# reproduces overlapping permissions (same key returned by multiple permission ranges)
+resource "etcd_role" "test_section_item1_write" {
+  name = "TestSectionItem1Write"
 
   permissions {
     permission = "write"
-    key        = data.etcd_prefix_range_end.mycomplex_prefix.key
-    range_end  = data.etcd_prefix_range_end.mycomplex_prefix.range_end
+    key        = "TestSection:Item1"
+    range_end  = "TestSection:Item1\u0000" # single key range
   }
 }
 
@@ -55,5 +61,5 @@ resource "etcd_role" "my_complex_prefix" {
 resource "etcd_user" "user" {
   username = "MyUserName"
   password = "passw"
-  roles    = [etcd_role.test_section.name, etcd_role.my_prefix.name, etcd_role.my_complex_prefix.name]
+  roles    = [etcd_role.test_section.name, etcd_role.test_section_item1_write.name, etcd_role.my_prefix.name, etcd_role.my_complex_prefix.name]
 }

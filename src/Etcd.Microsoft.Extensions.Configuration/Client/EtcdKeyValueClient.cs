@@ -188,9 +188,13 @@ public class EtcdKeyValueClient : IEtcdKeyValueClient
 	private List<Mvccpb.KeyValue> GetAllKeys(List<Permission> permissions)
 	{
 		var keys = new List<Mvccpb.KeyValue>();
+		var processedKeys = new HashSet<string>();
 
+		// Permissions from different roles (or within one role) may overlap (e.g. read on a prefix and readwrite on a specific key inside it)
 		foreach (var permission in permissions)
-			keys.AddRange(GetKeys(permission.Key.ToStringUtf8()));
+			foreach (var item in GetKeys(permission.Key.ToStringUtf8()))
+				if (processedKeys.Add(item.Key.ToStringUtf8()))
+					keys.Add(item);
 
 		return keys;
 	}

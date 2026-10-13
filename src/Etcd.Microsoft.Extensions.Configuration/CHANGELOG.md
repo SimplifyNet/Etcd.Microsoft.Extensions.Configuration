@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.2.2] - 2026-10-13
+
+### Fixed
+
+- Duplicate key error ("An item with the same key has already been added") when user roles have overlapping permissions (e.g. read on a prefix and write on a specific key inside it)
+
+### Dependencies
+
+- Microsoft.Extensions.Configuration bump to 10.0.12
+
 ## [3.2.1] - 2026-07-07
 
 ### Fixed
