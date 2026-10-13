@@ -7,35 +7,133 @@
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/SimplifyNet/Etcd.Microsoft.Extensions.Configuration)](https://www.codefactor.io/repository/github/simplifynet/Etcd.Microsoft.Extensions.Configuration)
 ![Platform](https://img.shields.io/badge/platform-.NET%2010.0%20%7C%20.NET%209.0%20%7C%20.NET%208.0-lightgrey)
 
-Etcd-based configuration provider for Microsoft.Extensions.Configuration.
+`Etcd.Microsoft.Extensions.Configuration` is an etcd-backed configuration provider for `Microsoft.Extensions.Configuration`.
 
-> Keep in mind that starting with v2, on Windows it requires Windows 10 or Windows Server 2016 (or later) because the internal gRPC client uses the HTTP/2 protocol for communication (<https://docs.microsoft.com/en-us/answers/questions/310032/2012-r2-net-core-http2.html>).
+It lets you load configuration values from etcd into the standard .NET configuration pipeline, including support for key prefixes, watch-based refresh, and both direct and configuration-based settings.
 
-## Quick Start
+> Note: Starting with v2, Windows requires Windows 10 / Windows Server 2016 or later because the internal gRPC client uses HTTP/2.
 
-### HTTP
+## Contents
+
+- [Installation](#installation)
+- [Setup](#setup)
+- [Usage](#usage)
+- [HTTPS configuration](#https-configuration)
+- [Testing locally](#testing-locally)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Installation
+
+Install the NuGet package:
+
+```bash
+dotnet add package Etcd.Microsoft.Extensions.Configuration
+```
+
+This package targets .NET 8, .NET 9, and .NET 10.
+
+## Setup
+
+The library exposes an `AddEtcd(...)` extension method on `ConfigurationBuilder`.
+
+At minimum, you need:
+
+- `Credentials` with an etcd username and password
+- `EtcdSettings` with the etcd connection string
+
+### Basic HTTP example
 
 ```csharp
+using Etcd.Microsoft.Extensions.Configuration;
+using Etcd.Microsoft.Extensions.Configuration.Auth;
+using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Microsoft.Extensions.Configuration;
+
 var config = new ConfigurationBuilder()
-  .AddEtcd(
-    new Credentials("MyEtcdUserName", "passw"),
-    new EtcdSettings("http://serveraddress:2379"))
-  .Build();
+    .AddEtcd(
+        new Credentials("MyEtcdUserName", "passw"),
+        new EtcdSettings("http://serveraddress:2379"))
+    .Build();
 
 var mySection = config.GetSection("MySection");
 var myKeyValue = mySection["MyKeyName"];
 ```
 
-### HTTPS
+### Using environment variables
 
-When using HTTPS, a *.crt CA certificate (provided by the etcd administrator) should be placed in a well-known system certificate store (depending on the OS).
+You can also create credentials from environment variables:
 
-* For Windows, it is `Trusted Root Certification Authority`.
-* For Linux, at least for Arch/Manjaro Linux, it should be placed in `/etc/ca-certificates/trust-source/anchors/`, followed by the `sudo trust extract-compat` command.
+```csharp
+var credentials = Credentials.FromEnvironmentVariables();
 
-### HTTPS with Settings from a Local JSON File
+var config = new ConfigurationBuilder()
+    .AddEtcd(credentials, new EtcdSettings("http://localhost:2379"))
+    .Build();
+```
 
-appsettings.json
+The default environment variable names are:
+
+- `ETCD_CLIENT_USER_NAME`
+- `ETCD_CLIENT_PASSWORD`
+
+## Usage
+
+### Prefix-based configuration
+
+You can load only a subset of keys by applying a prefix:
+
+```csharp
+var config = new ConfigurationBuilder()
+    .AddEtcd(
+        new Credentials("MyEtcdUserName", "passw"),
+        new EtcdSettings("http://localhost:2379"),
+        "MyApplication")
+    .Build();
+```
+
+This is useful when different services share the same etcd instance but use separate namespaces.
+
+### Multiple prefixes
+
+```csharp
+var config = new ConfigurationBuilder()
+    .AddEtcd(
+        new Credentials("MyEtcdUserName", "passw"),
+        new EtcdSettings("http://localhost:2379"),
+        new[] { "App:Shared", "App:Specific" })
+    .Build();
+```
+
+### Watching for changes
+
+Watching is enabled by default. You can disable it or control unwatching behavior with the `enableWatch` and `unwatchOnDispose` parameters:
+
+```csharp
+var config = new ConfigurationBuilder()
+    .AddEtcd(
+        new Credentials("MyEtcdUserName", "passw"),
+        new EtcdSettings("http://localhost:2379"),
+        keyPrefix: "MyApp",
+        enableWatch: true,
+        unwatchOnDispose: true)
+    .Build();
+```
+
+## HTTPS configuration
+
+When using HTTPS, a `.crt` CA certificate provided by the etcd administrator should be added to the system trust store.
+
+- Windows: `Trusted Root Certification Authority`
+- Linux (for example Arch/Manjaro): place it in `/etc/ca-certificates/trust-source/anchors/` and run:
+
+```bash
+sudo trust extract-compat
+```
+
+### HTTPS via appsettings.json
+
+`appsettings.json`
 
 ```json
 {
@@ -46,75 +144,66 @@ appsettings.json
 ```
 
 ```csharp
+using Etcd.Microsoft.Extensions.Configuration;
+using Etcd.Microsoft.Extensions.Configuration.Auth;
+using Etcd.Microsoft.Extensions.Configuration.Settings;
+using Microsoft.Extensions.Configuration;
+
 var jsonConfig = new ConfigurationBuilder()
-  .AddJsonFile("appsettings.json")
-  .Build();
+    .AddJsonFile("appsettings.json")
+    .Build();
 
 var config = new ConfigurationBuilder()
-  .AddEtcd(
-    new Credentials("MyEtcdUserName", "passw"),
-    new ConfigurationBasedEtcdSettings(jsonConfig))
-  .Build();
-
-var mySection = config.GetSection("MySection");
-var myKeyValue = mySection["MyKeyName"];
+    .AddEtcd(
+        new Credentials("MyEtcdUserName", "passw"),
+        new ConfigurationBasedEtcdSettings(jsonConfig))
+    .Build();
 ```
 
-Settings can be mixed from different locations.
+Settings can be composed from multiple configuration sources.
 
-## Testing
+## Testing locally
 
-To set up an integration test environment, make sure you have an etcd instance running on the standard port, without SSL: http://localhost:2379
+To run the integration tests locally, make sure an etcd instance is running on the default port without SSL:
 
-On Ubuntu, simply run 
-
+```text
+http://localhost:2379
 ```
+
+On Ubuntu, install the required tools:
+
+```bash
 sudo apt-get install etcd-server etcd-client
 ```
 
-Create a root account and enable authentication
+Create a root user and enable authentication:
 
-```
+```bash
 etcdctl --endpoints=http://localhost:2379 user add root
-Password of root:
-```
-Enable authentication:
-```
 etcdctl --endpoints=http://localhost:2379 auth enable
 ```
 
-For your convenience, terraform files are included in the folder tests/terraform/
+The repository includes Terraform files in `tests/terraform/` to provision test keys for the integration setup.
 
-In the file ```tests/terraform/main.tf``` replace the password with the one you just used when creating the root user.
-
-in the tests/terraform folder, init terraform:
-
-```
+```bash
+cd tests/terraform
 terraform init
-```
-to see what changes will be made:
-```
 terraform plan
-```
-to execute the changes, and create the keys:
-```
 terraform apply
 ```
 
-then run the tests from the src folder
+After the etcd test data is ready, run the test projects from the `src` folder.
 
 ## Contributing
 
-There are many ways in which you can participate in the project. Like most open-source software projects, contributing code is just one of many ways you can help improve. Some of the things you could help out with are:
+Contributions are welcome. You can help by:
 
-* Documentation (both code and features)
-* Bug reports
-* Bug fixes
-* Feature requests
-* Feature implementations
-* Test coverage
-* Code quality
-* Sample applications
+- improving documentation
+- reporting bugs
+- submitting fixes
+- proposing features
+- adding tests
+- improving code quality
 
 ## License
 
