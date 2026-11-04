@@ -124,12 +124,26 @@ var config = new ConfigurationBuilder()
 
 When using HTTPS, a `.crt` CA certificate provided by the etcd administrator should be added to the system trust store.
 
-- Windows: `Trusted Root Certification Authority`
-- Linux (for example Arch/Manjaro): place it in `/etc/ca-certificates/trust-source/anchors/` and run:
+### Ubuntu
+
+Copy the certificate to `/usr/local/share/ca-certificates/` with a `.crt` extension, then update the system trust store:
+
+```bash
+sudo cp etcd-ca.crt /usr/local/share/ca-certificates/etcd-ca.crt
+sudo update-ca-certificates
+```
+
+### Arch Linux
+
+Place the certificate in `/etc/ca-certificates/trust-source/anchors/`, then run:
 
 ```bash
 sudo trust extract-compat
 ```
+
+### Windows
+
+Install the certificate in `Trusted Root Certification Authority`.
 
 ### HTTPS via appsettings.json
 
