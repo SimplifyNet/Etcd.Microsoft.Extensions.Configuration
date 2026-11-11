@@ -2,7 +2,7 @@
 
 ## [3.3.0] - 2026-11-11
 
-# Fixed
+### Fixed
 
 - Configurations share 1 client, which is destroyed upon Dispose (#17)
 
