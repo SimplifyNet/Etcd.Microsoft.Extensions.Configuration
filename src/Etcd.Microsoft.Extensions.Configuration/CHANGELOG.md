@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0] - 2026-11-11
+
+### Dependencies
+
+- dotnet-etcd bump to 10.0.0
+- Microsoft.Extensions.Configuration bump to 10.0.15
+
 ## [3.2.2] - 2026-10-13
 
 ### Fixed
