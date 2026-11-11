@@ -84,6 +84,48 @@ public class EtcdConfigurationProviderTests
     }
 
     [Test]
+    public void Dispose_UnsubscribesFromClientAndDisposesIt()
+    {
+        // Arrange
+        var client = new TestEtcdKeyValueClient(new Dictionary<string, string?>
+        {
+            ["key"] = "value"
+        });
+
+        var provider = new EtcdConfigurationProvider(client);
+        provider.Load();
+
+        var reloadCount = SubscribeReloadCounter(provider);
+
+        // Act
+        provider.Dispose();
+        client.RaiseWatchCallback(new WatchEvent(EventType.Put, "key", "new-value"));
+
+        // Assert
+        Assert.That(reloadCount(), Is.Zero);
+        Assert.That(client.DisposeCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void Dispose_CalledMultipleTimes_DisposesClientOnce()
+    {
+        // Arrange
+        var client = new TestEtcdKeyValueClient(new Dictionary<string, string?>
+        {
+            ["key"] = "value"
+        });
+
+        var provider = new EtcdConfigurationProvider(client);
+
+        // Act
+        provider.Dispose();
+        provider.Dispose();
+
+        // Assert
+        Assert.That(client.DisposeCount, Is.EqualTo(1));
+    }
+
+    [Test]
     public void WatchCallback_DeleteExistingKey_ReloadsAndRemovesValue()
     {
         // Arrange
@@ -125,8 +167,8 @@ public class EtcdConfigurationProviderTests
 
         public void RaiseWatchCallback(params WatchEvent[] events) => WatchCallback?.Invoke(events);
 
-        public void Dispose()
-        {
-        }
+        public int DisposeCount { get; private set; }
+
+        public void Dispose() => DisposeCount++;
     }
 }

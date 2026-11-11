@@ -57,6 +57,56 @@ public class ConfigurationBuilderTests
 		Assert.Pass("Credentials info: " + envCredentials.ToString());
 	}
 
+	[Test]
+	public void Build_WithMultiplePrefixes_DisposeAndRebuild_ValuesLoaded()
+	{
+		// Arrange
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var builder = new ConfigurationBuilder()
+			.AddEtcd(credentials, etcdSettings, new[] { "MyPrefix", "TestSection" });
+
+		// Act & Assert
+
+		var config = builder.Build();
+		using (config as IDisposable)
+			PerformMultiPrefixTest(config);
+
+		var rebuiltConfig = builder.Build();
+		PerformMultiPrefixTest(rebuiltConfig);
+	}
+
+	[Test]
+	public void ConfigurationManager_SourceRebuild_ThenReload_ValuesLoaded()
+	{
+		// Arrange
+
+		var credentials = new Credentials("MyUserName", "passw");
+		var etcdSettings = new EtcdSettings("http://localhost:2379");
+
+		var configurationManager = new ConfigurationManager();
+		configurationManager.AddEtcd(credentials, etcdSettings, "MyPrefix");
+
+		// Act
+
+		// Changing a property rebuilds all providers and disposes the previous ones
+		((IConfigurationBuilder)configurationManager).Properties["trigger-rebuild"] = "true";
+		((IConfigurationRoot)configurationManager).Reload();
+
+		// Assert
+
+		Assert.That(configurationManager["TestAppSection:Item1"], Is.EqualTo("1234321"));
+	}
+
+	private static void PerformMultiPrefixTest(IConfigurationRoot config)
+	{
+		Assert.That(config["TestAppSection:Item1"], Is.EqualTo("1234321"));
+		Assert.That(config["Item1"], Is.EqualTo("Item 1 value"));
+		Assert.That(config["SubSection:Item1"], Is.EqualTo("Sub section value 1"));
+	}
+
 	private static void PerformTest(IConfigurationRoot config)
 	{
 		var testSection = config.GetSection("TestSection");

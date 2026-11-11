@@ -23,10 +23,12 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 
 	private readonly object _locker = new();
 
+	private bool _isDisposed;
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="EtcdConfigurationProvider" /> class.
 	/// </summary>
-	/// <param name="client">The client.</param>
+	/// <param name="client">The client. The provider takes ownership of the client and disposes it when the provider is disposed.</param>
 	/// <param name="keyPrefix">The key prefix.</param>
 	/// <param name="keyPrefixSeparator">The key prefix separator.</param>
 	public EtcdConfigurationProvider(IEtcdKeyValueClient client, string? keyPrefix = null, string? keyPrefixSeparator = DefaultKeyPrefixSeparator)
@@ -70,10 +72,22 @@ public class EtcdConfigurationProvider : ConfigurationProvider, IDisposable
 	/// <summary>
 	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 	/// </summary>
-	public void Dispose() => _client.Dispose();
+	public void Dispose()
+	{
+		if (_isDisposed)
+			return;
+
+		_isDisposed = true;
+
+		_client.WatchCallback -= OnWatchCallback;
+		_client.Dispose();
+	}
 
 	private void OnWatchCallback(IEnumerable<WatchEvent> events)
 	{
+		if (_isDisposed)
+			return;
+
 		var hasChanges = false;
 		lock (_locker)
 		{
